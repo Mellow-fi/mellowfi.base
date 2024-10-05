@@ -2,13 +2,13 @@ import type { AppProps } from 'next/app';
 import "../styles/globals.css";
 import '@rainbow-me/rainbowkit/styles.css';
 
+// import {
+//   getDefaultConfig,
+//   RainbowKitProvider,
+// } from '@rainbow-me/rainbowkit';
+import { WagmiProvider,http, createConfig } from 'wagmi';
 import {
-  getDefaultConfig,
-  RainbowKitProvider,
-} from '@rainbow-me/rainbowkit';
-import { WagmiProvider } from 'wagmi';
-import {
-  celo, celoAlfajores
+  base, baseSepolia
 } from 'wagmi/chains';
 import {
   QueryClientProvider,
@@ -17,11 +17,12 @@ import {
 
 
 
-const config = getDefaultConfig({
-  appName: 'mellow.fi',
-  projectId: '3775628f164e8d55622758de458ada3c',
-  chains: [celoAlfajores],
-  ssr: true, // If your dApp uses server side rendering (SSR)
+const config = createConfig({
+  chains: [base, baseSepolia],
+  transports: {
+    [base.id]: http(),
+    [baseSepolia.id]: http(),
+  },
 });
 
 const queryClient = new QueryClient();
@@ -30,10 +31,10 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider>
+        {/* <RainbowKitProvider> */}
           {/* Your App */}
           <Component {...pageProps} />
-        </RainbowKitProvider>
+        {/* </RainbowKitProvider> */}
       </QueryClientProvider>
     </WagmiProvider>
   );

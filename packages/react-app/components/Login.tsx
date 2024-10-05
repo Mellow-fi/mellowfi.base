@@ -1,8 +1,6 @@
 'use client';
 
 import React, { useState } from "react";
-import { auth } from "./firebase"; // Ensure this path is correct
-import { sendSignInLinkToEmail } from "firebase/auth";
 import { useRouter } from "next/router";
 import Navbar from "./NavBar";
 import Footer from "./Footer";
@@ -26,14 +24,6 @@ const Login: React.FC = () => {
       url: 'http://localhost:3000/pool-list',
       handleCodeInApp: true,
     };
-
-    try {
-      await sendSignInLinkToEmail(auth, email, actionCodeSettings);
-      setMessage(`Check your email for the login link!`);
-      window.localStorage.setItem('emailForSignIn', email);
-    } catch (error: any) {
-      setMessage(error.message);
-    }
   };
 
   return (
