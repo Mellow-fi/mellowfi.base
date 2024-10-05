@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import Navbar from "./NavBar";
 import Footer from "./Footer";
 import Image from "next/image";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>('');
@@ -38,7 +39,7 @@ const Login: React.FC = () => {
           <Image src="/../static/login-image.png" alt="Cat Image" width={400} height={400}/>
         </div>
 
-        <div>
+        {/* <div>
           <input
             type="email"
             placeholder="Your Email"
@@ -46,15 +47,16 @@ const Login: React.FC = () => {
             onChange={handleEmailChange}
             className="border rounded p-2 mb-4 w-full"
           />
-        </div>
+        </div> */}
 
         <div>
-          <button
+          {/* <button
             onClick={handleLogin}
             className="mt-4 px-7 py-2 bg-yellow-400 text-black rounded-full shadow-lg hover:bg-yellow-500 transition duration-300"
           >
             Login here
-          </button>
+          </button> */}
+          <ConnectButton />
 
           
         </div>

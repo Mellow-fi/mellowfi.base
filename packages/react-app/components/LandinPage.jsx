@@ -1,5 +1,6 @@
 import React from 'react';
 import { useRouter } from "next/router";
+import Image from 'next/image';
 
 const LandingPage = () => {
     const router = useRouter();
@@ -23,12 +24,14 @@ const LandingPage = () => {
                 </div>
 
                 {/* Right Section */}
-                <div className="md:w-1/2 md:mt-8 md:mt-0  flex justify-center">
+                <div className="md:w-1/2 md:mt-8 flex justify-center">
                     <div className="relative">
-                        <img
-                            src="../static/cat.png"
+                        <Image
+                            src="/../static/cat.png"
                             alt="Phone displaying Mellow Finance"
                             className="max-w-xs md:max-w-[300px] w-[200px] shadow-xl custom-shadow"
+                            width={300}
+                            height={300}
                         />
                     </div>
                 </div>
