@@ -6,26 +6,24 @@ import Navbar from "./NavBar";
 import Footer from "./Footer";
 import Image from "next/image";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useAccount } from "wagmi";
+import { useEffect } from "react";
+
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>('');
   const [message, setMessage] = useState<string | null>(null);
+  const { address } = useAccount();
   const router = useRouter();
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-  };
+  useEffect(() => {
+    if (address) {
+      router.push('/pool-list');
+    }
+  }, [address, router]);
 
-  const handleLoginWithoutEmail = () => {
-    router.push('/pool-list');
-  };
-
-  const handleLogin = async () => {
-    const actionCodeSettings = {
-      url: 'http://localhost:3000/pool-list',
-      handleCodeInApp: true,
-    };
-  };
+  // if address redirect to pool-list
+  
 
   return (
     <div>
@@ -56,7 +54,9 @@ const Login: React.FC = () => {
           >
             Login here
           </button> */}
-          <ConnectButton />
+          <ConnectButton
+          
+          />
 
           
         </div>

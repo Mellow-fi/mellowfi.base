@@ -13,7 +13,7 @@ const DepositModal: React.FC<DepositModalProps> = ({ isOpen, onClose, onDepositC
 
   const handleDeposit = () => {
     // Choose the function based on the title
-    if (title === "Celo/cKES Pool") {
+    if (title === "BASE/cKES Pool") {
       onDepositCelo(amount);
     } else if (title === "USDT/cKES Pool") {
       onDepositStableCoin(amount);

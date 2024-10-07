@@ -9,7 +9,7 @@ const PoolList: React.FC = () => {
 
   const pools = [
     {
-      title: 'Celo/cKES Pool',
+      title: 'BASE/cKES Pool',
       interestRate: 8,
       imageUrl: '../static/cardImage.png',
     },
