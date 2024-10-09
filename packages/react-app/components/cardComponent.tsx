@@ -11,7 +11,7 @@ type CardProps = {
 
 const CardComponent: React.FC<CardProps> = ({ title, interestRate, imageUrl }) => {
 
-  const { address,depositCeloCollateral,depositUsdtCollateral } = useWeb3();
+  const { address,depositNativeCollateral,depositStableCollateral } = useWeb3();
   useEffect(() => {
     setUserAddress(address ?? null);
   }, [address]); 
@@ -22,7 +22,7 @@ const CardComponent: React.FC<CardProps> = ({ title, interestRate, imageUrl }) =
   
   const handleDepositCeloCollateral = async (amount: number) => {
     try {
-      const tx = await depositCeloCollateral(amount.toString());
+      const tx = await depositNativeCollateral(amount.toString());
       
       console.log("Celo collateral deposited: ", amount);
     } catch (error) {
@@ -31,7 +31,7 @@ const CardComponent: React.FC<CardProps> = ({ title, interestRate, imageUrl }) =
   };
   const handleDepositCEURCollateral = async (amount: number) => {
     try {
-      const tx = await depositUsdtCollateral(amount.toString());
+      const tx = await depositStableCollateral(amount.toString());
       
       console.log("USDT collateral deposited: ", amount);
     } catch (error) {

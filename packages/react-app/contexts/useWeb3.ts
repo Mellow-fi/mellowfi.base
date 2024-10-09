@@ -8,9 +8,9 @@ import { Address } from "viem";
 
 export const useWeb3 = () => {
   const { address } = useAccount();
-  const COLLATERAL_MANAGER_CONTRACT = "0xe71B6e37dE516765516eBf133bc90D825dD28008";
+  const COLLATERAL_MANAGER_CONTRACT = "0x0BA2D7e1f892787DCB83061B6B58b3eda0c9B842";
   const cUER_CONTRACT_ADDRESS = "0x10c892a6ec43a53e45d0b916b4b7d383b1b78c0f";
-  const LOAN_MANAGER_CONTRACT = "0x936245142515D4065a50F7c3Be985ce788fae913";
+  const LOAN_MANAGER_CONTRACT = "0x9a7c50e9eE3B3F12FE1121b621a71AEF4f150AeC";
   const cKES_MOCK_TOCKEN = "0x874069fa1eb16d44d622f2e0ca25eea172369bc1";
 
   
@@ -46,19 +46,19 @@ export const useWeb3 = () => {
     return result;  // Return the result directly
   };
 
-  const depositCeloCollateral = async (amount: string) => {
+  const depositNativeCollateral = async (amount: string) => {
     const amountInWei = parseUnits(amount, 18);
-    return await executeTransaction({ contractAddress: COLLATERAL_MANAGER_CONTRACT, abi: CollateralManagerABI.abi, method: "depositCeloCollateral", args: [{ value: amountInWei }] });
+    return await executeTransaction({ contractAddress: COLLATERAL_MANAGER_CONTRACT, abi: CollateralManagerABI.abi, method: "depositNativeCollateral", args: [{ value: amountInWei }] });
   };
 
-  const depositUsdtCollateral = async (amount: string) => {
+  const depositStableCollateral = async (amount: string) => {
     const amountInWei = parseUnits(amount, 18);
 
     // Approve the collateral manager to spend USDT
     await executeTransaction({ contractAddress: cUER_CONTRACT_ADDRESS, abi: StableTokenABI.abi, method: "approve", args: [COLLATERAL_MANAGER_CONTRACT, amountInWei] });
 
     // Deposit USDT collateral
-    return await executeTransaction({ contractAddress: COLLATERAL_MANAGER_CONTRACT, abi: CollateralManagerABI.abi, method: "depositUsdtCollateral", args: [amountInWei] });
+    return await executeTransaction({ contractAddress: COLLATERAL_MANAGER_CONTRACT, abi: CollateralManagerABI.abi, method: "depositStableCollateral", args: [amountInWei] });
   };
 
   const getMaxLoanAmount = async () => {
@@ -91,7 +91,7 @@ export const useWeb3 = () => {
 
   const signTransaction = async () => {
     const signer = await getSigner();
-    const res = await signer.signMessage(`Hello from Celo Composer Valora Template!`);
+    const res = await signer.signMessage(`Hello from Mellow-Finance!`);
     console.log("res", res);
     return res;
   };
@@ -99,8 +99,8 @@ export const useWeb3 = () => {
   return {
     address,
     signTransaction,
-    depositCeloCollateral,
-    depositUsdtCollateral,
+    depositNativeCollateral,
+    depositStableCollateral,
     getMaxLoanAmount,
     getCollateralBalanceinUSD,
     requestLoan,
