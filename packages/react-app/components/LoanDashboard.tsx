@@ -3,6 +3,7 @@ import { useWeb3 } from '@/contexts/useWeb3';
 import Navbar from './NavBar';
 import Footer from './Footer';
 import { useRouter } from 'next/router'; 
+import { get } from 'http';
 
 interface LoanData {
   loanAmount: number;
@@ -13,6 +14,7 @@ interface LoanData {
 
 const LoanDashboard: React.FC = () => {
   const [loanData, setLoanData] = useState<LoanData | null>(null);
+  const [loanBalance, setLoanBalance] = useState<number | null>(null);  // State for loan balance
   const { getMaxLoanAmount, getCollateralBalanceinUSD, requestLoan, repayLoan, getLoanBalancewithInterest } = useWeb3();
   const router = useRouter(); 
 
@@ -48,11 +50,12 @@ const LoanDashboard: React.FC = () => {
   const getLoanBalance = async () => {
     try {
       const loanBalance = await getLoanBalancewithInterest();
-      return loanBalance;
+      setLoanBalance(loanBalance);
     } catch (error) {
       console.error("Error fetching loan balance:", error);
     }
   }
+  getLoanBalance();
     
 
   const handleBorrowLoan = async () => {
@@ -173,7 +176,7 @@ const LoanDashboard: React.FC = () => {
         <div className="mt-8 bg-gray-100 p-4 rounded-lg shadow-lg">
           <h3 className="text-2xl font-bold mb-4">Repay Loan</h3>
           <p className="text-gray-700 text-sm">
-            <strong>Loan Taken:</strong> ${getLoanBalance()}
+            <strong>Loan Taken:</strong> ${loanBalance !== null ? loanBalance.toLocaleString() : 'Loading...'}
           </p>
           <div className="mt-4">
             <button
