@@ -23,8 +23,8 @@ contract LoanManager is ReentrancyGuard, Ownable {
     uint256 public loanDuration = 30 days;
     uint256 public defaultDuration = 15 days;   // Extra time before liquidation after loan is due
 
-    AggregatorV3Interface internal celoPriceFeed;
-    AggregatorV3Interface internal usdtPriceFeed;
+    AggregatorV3Interface internal nativePriceFeed;
+    AggregatorV3Interface internal stablePriceFeed;
 
     struct Loan {
         uint256 amount;
@@ -44,19 +44,19 @@ contract LoanManager is ReentrancyGuard, Ownable {
     constructor(ERC20 _cusdToken,address _collateralManager) Ownable(msg.sender) {
         cUSDToken = _cusdToken;
         collateralManager = CollateralManager(_collateralManager);
-        celoPriceFeed = AggregatorV3Interface(0x022F9dCC73C5Fb43F2b4eF2EF9ad3eDD1D853946);
-        usdtPriceFeed = AggregatorV3Interface(0x7bcB65B53D5a7FfD2119449B8CbC370c9058fd52);
+        nativePriceFeed = AggregatorV3Interface(0x3c65e28D357a37589e1C7C86044a9f44dDC17134);
+        stablePriceFeed = AggregatorV3Interface(0x3ec8593F930EA45ea58c968260e6e9FF53FC934f);
     }
 
     // Fetches the latest price of CELO from Chainlink Price Feed
-    function getCeloPrice() public view returns (int) {
-        (, int price,,,) = celoPriceFeed.latestRoundData();
-        return price; // CELO price in USD, with 8 decimals
+    function getNativePrice() public view returns (int) {
+        (, int price,,,) = nativePriceFeed.latestRoundData();
+        return price; // cbETH price in USD, with 8 decimals
     }
 
     // Fetches the latest price of USDT from Chainlink Price Feed
-    function getUsdtPrice() public view returns (int) {
-        (, int price,,,) = usdtPriceFeed.latestRoundData();
+    function getStablePrice() public view returns (int) {
+        (, int price,,,) = stablePriceFeed.latestRoundData();
         return price; // USDT price in USD, with 8 decimals
     }
 
@@ -67,12 +67,12 @@ contract LoanManager is ReentrancyGuard, Ownable {
 
 
         // Ensure user has enough collateral
-        (uint256 userColCelo, uint256 userColStable) = collateralManager.getCollateralBalance(msg.sender);
-        uint256 celoPriceInUSD = uint256(getCeloPrice());
-        uint256 usdtPriceInUSD = uint256(getUsdtPrice());
-        uint256 celoCollateralInUSD = (userColCelo * celoPriceInUSD) / 1e18;
-        uint256 stableCollateralInUSD = (userColStable * usdtPriceInUSD) / 1e18;
-        uint256 userTotalColinUSD = celoCollateralInUSD + stableCollateralInUSD;
+        (uint256 userColNative, uint256 userColStable) = collateralManager.getCollateralBalance(msg.sender);
+        uint256 nativePriceInUSD = uint256(getNativePrice());
+        uint256 stablePriceInUSD = uint256(getStablePrice());
+        uint256 nativeCollateralInUSD = (userColNative * nativePriceInUSD) / 1e18;
+        uint256 stableCollateralInUSD = (userColStable * stablePriceInUSD) / 1e18;
+        uint256 userTotalColinUSD = nativeCollateralInUSD + stableCollateralInUSD;
         // require(userTotalColinUSD >= _loanAmount, "LoanManager: Insufficient collateral");
         
         // Store loan information
@@ -94,10 +94,10 @@ contract LoanManager is ReentrancyGuard, Ownable {
 
     // Get possible loan amount based on collateral
     function getMaxLoanAmount() external view returns (uint256) {
-        (uint256 userColCelo, uint256 userColStable ) = collateralManager.getCollateralBalance(msg.sender);
-        uint256 celoPriceInUSD = uint256(getCeloPrice());
-        uint256 usdtPriceInUSD = uint256(getUsdtPrice());
-        uint256 totalCollateralInUSD = (userColCelo * celoPriceInUSD) / 1e18 + (userColStable * usdtPriceInUSD) / (1e18);
+        (uint256 userColNative, uint256 userColStable ) = collateralManager.getCollateralBalance(msg.sender);
+        uint256 celoPriceInUSD = uint256(getNativePrice());
+        uint256 usdtPriceInUSD = uint256(getStablePrice());
+        uint256 totalCollateralInUSD = ((userColNative * celoPriceInUSD) / 1e18) + ((userColStable * usdtPriceInUSD) / (1e18));
         return totalCollateralInUSD;
     }
 
@@ -134,7 +134,7 @@ contract LoanManager is ReentrancyGuard, Ownable {
         loan.isDefaulted = true;
 
         // Liquidate collateral
-        collateralManager.withdrawCeloCollateral(loan.collateral); // Liquidate collateral (in this example, withdraw to contract)
+        collateralManager.withdrawNativeCollateral(loan.collateral); // Liquidate collateral (in this example, withdraw to contract)
 
         emit LoanDefaulted(_user, loan.collateral);
     }
@@ -179,10 +179,10 @@ contract LoanManager is ReentrancyGuard, Ownable {
     }
 
     function getCollateralBalanceinUSD(address _user) external view returns (uint256) {
-        (uint256 userColCelo, uint256 userColStable) = collateralManager.getCollateralBalance(_user);
-        uint256 celoPriceInUSD = uint256(getCeloPrice());
-        uint256 usdtPriceInUSD = uint256(getUsdtPrice());
-        uint256 totalCollateralInUSD = (userColCelo * celoPriceInUSD) / 1e18 + (userColStable * usdtPriceInUSD) / 1e18;
+        (uint256 userColNative, uint256 userColStable) = collateralManager.getCollateralBalance(_user);
+        uint256 nativePriceInUSD = uint256(getNativePrice());
+        uint256 stablePriceInUSD = uint256(getStablePrice());
+        uint256 totalCollateralInUSD = ((userColNative * nativePriceInUSD) / 1e18) + ((userColStable * stablePriceInUSD) / 1e18);
         return totalCollateralInUSD;
     }
     
