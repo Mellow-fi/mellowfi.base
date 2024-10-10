@@ -20,38 +20,34 @@ const PoolList: React.FC = () => {
     },
   ];
 
-  
   const redirectToLoanDashboard = () => {
     router.push('/Loandashboard'); 
   };
 
   return (
-    <div>
-    <div >   
-      <Navbar />
-      
-    </div>
+    <div className="flex flex-col min-h-screen">
+      <div>
+        <Navbar />
+      </div>
 
-    <div className="p-6 flex flex-col items-center">
-      <h1 className="text-2xl font-semibold mb-6">Mellow</h1>
-      {pools.map((pool, index) => (
-        <CardComponent
-          key={index}
-          title={pool.title}
-          interestRate={pool.interestRate}
-          imageUrl={pool.imageUrl}
-        />
-      ))}
+      <div className="p-6 flex flex-col items-center flex-grow">
+        <h1 className="text-2xl font-semibold mb-6">Mellow</h1>
 
-      {/* Add the button to redirect to LoanDashboard */}
-      <button
-        onClick={redirectToLoanDashboard}
-        className="mt-6 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-2 px-4 rounded"
-      >
-        Go to Loan Dashboard
-      </button>
-    </div>
-    <Footer />
+        {/* Grid container for cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          {pools.map((pool, index) => (
+            <CardComponent
+              key={index}
+              title={pool.title}
+              interestRate={pool.interestRate}
+              imageUrl={pool.imageUrl}
+              redirectToLoanDashboard={redirectToLoanDashboard} // Pass down the redirect function
+            />
+          ))}
+        </div>
+      </div>
+
+      <Footer />
     </div>
   );
 };
