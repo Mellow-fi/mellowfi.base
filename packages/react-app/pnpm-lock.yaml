@@ -8,6 +8,12 @@ importers:
 
   .:
     dependencies:
+      '@coinbase/wallet-sdk':
+        specifier: ^4.1.0
+        version: 4.1.0
+      '@fortawesome/fontawesome-free':
+        specifier: ^6.6.0
+        version: 6.6.0
       '@fortawesome/fontawesome-svg-core':
         specifier: ^6.6.0
         version: 6.6.0
@@ -21,8 +27,8 @@ importers:
         specifier: ^1.7.14
         version: 1.7.19(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@heroicons/react':
-        specifier: ^2.0.18
-        version: 2.1.5(react@18.2.0)
+        specifier: ^1.0.6
+        version: 1.0.6(react@18.2.0)
       '@rainbow-me/rainbowkit':
         specifier: ^2.1.6
         version: 2.1.7(@tanstack/react-query@5.59.0(react@18.2.0))(@types/react@18.3.11)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(viem@2.21.18(bufferutil@4.0.8)(typescript@5.6.2)(utf-8-validate@5.0.10)(zod@3.23.8))(wagmi@2.12.17(@tanstack/query-core@5.59.0)(@tanstack/react-query@5.59.0(react@18.2.0))(@types/react@18.3.11)(bufferutil@4.0.8)(encoding@0.1.13)(react-dom@18.2.0(react@18.2.0))(react-native@0.75.4(@babel/core@7.25.7(supports-color@9.4.0))(@babel/preset-env@7.25.7(@babel/core@7.25.7(supports-color@9.4.0))(supports-color@9.4.0))(@types/react@18.3.11)(bufferutil@4.0.8)(encoding@0.1.13)(react@18.2.0)(supports-color@9.4.0)(typescript@5.6.2)(utf-8-validate@5.0.10))(react@18.2.0)(supports-color@9.4.0)(typescript@5.6.2)(utf-8-validate@5.0.10)(viem@2.21.18(bufferutil@4.0.8)(typescript@5.6.2)(utf-8-validate@5.0.10)(zod@3.23.8))(zod@3.23.8))
@@ -47,6 +53,9 @@ importers:
       react-dom:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
+      react-icons:
+        specifier: ^5.3.0
+        version: 5.3.0(react@18.2.0)
       viem:
         specifier: 2.x
         version: 2.21.18(bufferutil@4.0.8)(typescript@5.6.2)(utf-8-validate@5.0.10)(zod@3.23.8)
@@ -805,6 +814,9 @@ packages:
   '@coinbase/wallet-sdk@4.0.4':
     resolution: {integrity: sha512-74c040CRnGhfRjr3ArnkAgud86erIqdkPHNt5HR1k9u97uTIZCJww9eGYT67Qf7gHPpGS/xW8Be1D4dvRm63FA==}
 
+  '@coinbase/wallet-sdk@4.1.0':
+    resolution: {integrity: sha512-SkJJ72X/AA3+aS21sPs/4o4t6RVeDSA7HuBW4zauySX3eBiPU0zmVw95tXH/eNSX50agKz9WzeN8P5F+HcwLOw==}
+
   '@emotion/hash@0.9.2':
     resolution: {integrity: sha512-MyqliTZGuOm3+5ZRSaaBGP3USLw6+EGykkwZns2EPC5g8jJ4z9OrdZY9apkl3+UP9+sdz76YYkwCKP5gh8iY3g==}
 
@@ -984,6 +996,10 @@ packages:
     resolution: {integrity: sha512-xyX0X9mc0kyz9plIyryrRbl7ngsA9jz77mCZJsUkLl+ZKs0KWObgaEBoSgQiYWAsSmjz/yjl0F++Got0Mdp4Rw==}
     engines: {node: '>=6'}
 
+  '@fortawesome/fontawesome-free@6.6.0':
+    resolution: {integrity: sha512-60G28ke/sXdtS9KZCpZSHHkCbdsOGEhIUGlwq6yhY74UpTiToIh8np7A8yphhM4BWsvNFtIvLpi4co+h9Mr9Ow==}
+    engines: {node: '>=6'}
+
   '@fortawesome/fontawesome-svg-core@6.6.0':
     resolution: {integrity: sha512-KHwPkCk6oRT4HADE7smhfsKudt9N/9lm6EJ5BVg0tD1yPA5hht837fB87F8pn15D8JfTqQOjhKTktwmLMiD7Kg==}
     engines: {node: '>=6'}
@@ -1011,8 +1027,8 @@ packages:
       react: ^16 || ^17 || ^18
       react-dom: ^16 || ^17 || ^18
 
-  '@heroicons/react@2.1.5':
-    resolution: {integrity: sha512-FuzFN+BsHa+7OxbvAERtgBTNeZpUjgM/MIizfVkSCL2/edriN0Hx/DWRCR//aPYwO5QX/YlgLGXk+E3PcfZwjA==}
+  '@heroicons/react@1.0.6':
+    resolution: {integrity: sha512-JJCXydOFWMDpCP4q13iEplA503MQO3xLoZiKum+955ZCtHINWnx26CUxVxxFQu/uLb4LW3ge15ZpzIkXKkJ8oQ==}
     peerDependencies:
       react: '>= 16'
 
@@ -4399,6 +4415,11 @@ packages:
     peerDependencies:
       react: ^18.2.0
 
+  react-icons@5.3.0:
+    resolution: {integrity: sha512-DnUk8aFbTyQPSkCfF8dbX6kQjXA9DktMeJqfjrg6cK9vwQVMxmcA3BfP4QoiztVmEHtwlTgLFsPuH2NskKT6eg==}
+    peerDependencies:
+      react: '*'
+
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
@@ -6342,6 +6363,13 @@ snapshots:
       preact: 10.24.2
       sha.js: 2.4.11
 
+  '@coinbase/wallet-sdk@4.1.0':
+    dependencies:
+      '@noble/hashes': 1.5.0
+      clsx: 1.2.1
+      eventemitter3: 5.0.1
+      preact: 10.24.2
+
   '@emotion/hash@0.9.2': {}
 
   '@esbuild/aix-ppc64@0.19.12':
@@ -6458,6 +6486,8 @@ snapshots:
 
   '@fortawesome/fontawesome-common-types@6.6.0': {}
 
+  '@fortawesome/fontawesome-free@6.6.0': {}
+
   '@fortawesome/fontawesome-svg-core@6.6.0':
     dependencies:
       '@fortawesome/fontawesome-common-types': 6.6.0
@@ -6485,7 +6515,7 @@ snapshots:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
 
-  '@heroicons/react@2.1.5(react@18.2.0)':
+  '@heroicons/react@1.0.6(react@18.2.0)':
     dependencies:
       react: 18.2.0
 
@@ -9186,7 +9216,7 @@ snapshots:
       debug: 4.3.7(supports-color@9.4.0)
       enhanced-resolve: 5.17.1
       eslint: 8.57.1(supports-color@9.4.0)
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@6.21.0(eslint@8.57.1(supports-color@9.4.0))(supports-color@9.4.0)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9(supports-color@9.4.0))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.21.0(eslint@8.57.1(supports-color@9.4.0))(supports-color@9.4.0)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9(supports-color@9.4.0))(eslint-plugin-import@2.31.0)(eslint@8.57.1(supports-color@9.4.0))(supports-color@9.4.0))(eslint@8.57.1(supports-color@9.4.0))(supports-color@9.4.0)
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@6.21.0(eslint@8.57.1(supports-color@9.4.0))(supports-color@9.4.0)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9(supports-color@9.4.0))(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1(supports-color@9.4.0))(supports-color@9.4.0)
       fast-glob: 3.3.2
       get-tsconfig: 4.8.1
       is-bun-module: 1.2.1
@@ -9199,7 +9229,7 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-module-utils@2.12.0(@typescript-eslint/parser@6.21.0(eslint@8.57.1(supports-color@9.4.0))(supports-color@9.4.0)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9(supports-color@9.4.0))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.21.0(eslint@8.57.1(supports-color@9.4.0))(supports-color@9.4.0)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9(supports-color@9.4.0))(eslint-plugin-import@2.31.0)(eslint@8.57.1(supports-color@9.4.0))(supports-color@9.4.0))(eslint@8.57.1(supports-color@9.4.0))(supports-color@9.4.0):
+  eslint-module-utils@2.12.0(@typescript-eslint/parser@6.21.0(eslint@8.57.1(supports-color@9.4.0))(supports-color@9.4.0)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9(supports-color@9.4.0))(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1(supports-color@9.4.0))(supports-color@9.4.0):
     dependencies:
       debug: 3.2.7(supports-color@9.4.0)
     optionalDependencies:
@@ -9221,7 +9251,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.57.1(supports-color@9.4.0)
       eslint-import-resolver-node: 0.3.9(supports-color@9.4.0)
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@6.21.0(eslint@8.57.1(supports-color@9.4.0))(supports-color@9.4.0)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9(supports-color@9.4.0))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.21.0(eslint@8.57.1(supports-color@9.4.0))(supports-color@9.4.0)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9(supports-color@9.4.0))(eslint-plugin-import@2.31.0)(eslint@8.57.1(supports-color@9.4.0))(supports-color@9.4.0))(eslint@8.57.1(supports-color@9.4.0))(supports-color@9.4.0)
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@6.21.0(eslint@8.57.1(supports-color@9.4.0))(supports-color@9.4.0)(typescript@5.6.2))(eslint-import-resolver-node@0.3.9(supports-color@9.4.0))(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1(supports-color@9.4.0))(supports-color@9.4.0)
       hasown: 2.0.2
       is-core-module: 2.15.1
       is-glob: 4.0.3
@@ -11089,6 +11119,10 @@ snapshots:
       loose-envify: 1.4.0
       react: 18.2.0
       scheduler: 0.23.2
+
+  react-icons@5.3.0(react@18.2.0):
+    dependencies:
+      react: 18.2.0
 
   react-is@16.13.1: {}
 

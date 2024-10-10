@@ -29,9 +29,12 @@ const Login: React.FC = () => {
     <div>
       <Navbar />
       <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center">
-        <div className="text-3xl font-semibold mb-4 text-gray-800 flex items-center">
-          <h1>Mellow  M<span className="text-yellow-400 mx-1 text-6xl">o</span>ney Magic!</h1>
-        </div>
+            {/* Title with Yarn Image */}
+      <div className="text-4xl font-semibold mb-8 text-gray-800 flex items-center space-x-1">
+        <span>Mellow  M</span>
+        <img src="../static/wool.png" alt="yarn" className="inline-block w-10 h-10" />
+        <span>ney Magic</span>
+      </div>
 
         <div>
           <Image src="/../static/login-image.png" alt="Cat Image" width={400} height={400}/>
