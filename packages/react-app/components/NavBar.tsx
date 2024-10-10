@@ -1,14 +1,22 @@
 import React from 'react';
 import { useRouter } from 'next/router'; 
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-
-
+import {  BlueCreateWalletButton } from './BlueCreateWalletButton'; // Import the button
 
 const Navbar: React.FC = () => {
   const router = useRouter();
 
   const navigateTo = (path: string) => {
     router.push(path);
+  };
+
+  const handleSuccess = (address: string) => {
+    console.log('Wallet created:', address);
+    // You can add additional logic here (e.g., update state, redirect, etc.)
+  };
+
+  const handleError = (error: any) => {
+    console.error('Error creating wallet:', error);
   };
 
   return (
@@ -18,15 +26,13 @@ const Navbar: React.FC = () => {
         <div className="text-2xl font-bold cursor-pointer" onClick={() => navigateTo('/')}>
           Mellow Finance
         </div>
-        <ConnectButton/>
+        <ConnectButton />
 
-        {/* Connect Wallet Button */}
-        <div>
-          
-        </div>
+        {/* Create Wallet Button */}
+        < BlueCreateWalletButton  />
       </div>
     </nav>
   );
 };
 
-export default Navbar;
+export default Navbar; 
