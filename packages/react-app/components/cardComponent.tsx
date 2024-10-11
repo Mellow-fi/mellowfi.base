@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import DepositModal from './DepositModal';
 import { useWeb3 } from '@/contexts/useWeb3';
+import { useWriteContract } from 'wagmi';
 
 type CardProps = {
   title: string;
@@ -10,6 +11,7 @@ type CardProps = {
 };
 
 const CardComponent: React.FC<CardProps> = ({ title, interestRate, imageUrl }) => {
+  const { isError, isPending ,writeContract, error } = useWriteContract();
 
   const { address,depositNativeCollateral,depositStableCollateral } = useWeb3();
   useEffect(() => {
@@ -22,7 +24,7 @@ const CardComponent: React.FC<CardProps> = ({ title, interestRate, imageUrl }) =
   
   const handleDepositCeloCollateral = async (amount: number) => {
     try {
-      const tx = await depositNativeCollateral(amount.toString());
+      await depositNativeCollateral(amount.toString(), writeContract);
       
       console.log("Celo collateral deposited: ", amount);
     } catch (error) {
@@ -31,7 +33,7 @@ const CardComponent: React.FC<CardProps> = ({ title, interestRate, imageUrl }) =
   };
   const handleDepositCEURCollateral = async (amount: number) => {
     try {
-      const tx = await depositStableCollateral(amount.toString());
+      const tx = await depositStableCollateral(amount.toString(), writeContract);
       
       console.log("USDT collateral deposited: ", amount);
     } catch (error) {

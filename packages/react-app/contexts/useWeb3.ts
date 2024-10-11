@@ -1,11 +1,12 @@
 import { BrowserProvider, Contract, parseUnits } from "ethers";
-import { useAccount, Config, useWriteContract } from "wagmi";
+import { useAccount, Config, useWriteContract, useReadContract } from "wagmi";
 import {WriteContractMutate} from "wagmi/query";
 import { useState, useEffect } from "react";
 import StableTokenABI from "./cusd-abi.json";
 import CollateralManagerABI from "./CollateralManager.json";
 import LoanManagerABI from "./LoanManager.json"
 import { Address } from "viem";
+import { readContract } from "viem/actions";
 
 export const useWeb3 = () => {
   const { address } = useAccount();
@@ -49,7 +50,7 @@ export const useWeb3 = () => {
   //   return result;  // Return the result directly
   // };
 
-  const depositNativeCollateral = async (amount: string) => {
+  const depositNativeCollateral = async (amount: string, func: WriteContractMutate<Config,unknown>) => {
     const amountInWei = parseUnits(amount, 18);
 
     try{
@@ -64,7 +65,7 @@ export const useWeb3 = () => {
     }
   };
 
-  const depositStableCollateral = async (amount: string) => {
+  const depositStableCollateral = async (amount: string, func: WriteContractMutate<Config,unknown>) => {
     const amountInWei = parseUnits(amount, 18);
 
     try{
@@ -84,7 +85,6 @@ export const useWeb3 = () => {
     } catch (e) {
       console.error(e);
     }
-  };
 
 
     // Approve the collateral manager to spend USDT
@@ -95,8 +95,18 @@ export const useWeb3 = () => {
   };
 
   const getMaxLoanAmount = async () => {
-    const max_amount =  await executeReadOnly({ contractAddress: LOAN_MANAGER_CONTRACT, abi: LoanManagerABI.abi, method: "getMaxLoanAmount", args: [] });
-    return max_amount;
+    try{
+      const tx = useReadContract({
+        abi: LoanManagerABI.abi,
+        address: LOAN_MANAGER_CONTRACT,
+        functionName: "getMaxLoanAmount",
+        args: [address],
+      })
+      return tx;
+    }
+    catch (e) {
+      console.error(e);
+    }
   };
 
   const getCollateralBalanceinUSD = async () => {

@@ -22,6 +22,9 @@ const LoanDashboard: React.FC = () => {
     const fetchLoanData = async () => {
       try {
         const maxLoanAmount = await getMaxLoanAmount();
+        if (maxLoanAmount === undefined) {
+          throw new Error("maxLoanAmount is undefined");
+        }
         const mxLoanStr = maxLoanAmount.toString();
         const mxLoanFloat = parseFloat(mxLoanStr);
         const formattedLoanAmount = (mxLoanFloat / Math.pow(10, 8)).toFixed(4); // Adjust precision as needed
