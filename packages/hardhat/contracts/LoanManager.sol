@@ -95,9 +95,9 @@ contract LoanManager is ReentrancyGuard, Ownable {
     // Get possible loan amount based on collateral
     function getMaxLoanAmount() external view returns (uint256) {
         (uint256 userColNative, uint256 userColStable ) = collateralManager.getCollateralBalance(msg.sender);
-        uint256 celoPriceInUSD = uint256(getNativePrice());
-        uint256 usdtPriceInUSD = uint256(getStablePrice());
-        uint256 totalCollateralInUSD = ((userColNative * celoPriceInUSD) / 1e18) + ((userColStable * usdtPriceInUSD) / (1e18));
+        uint256 NativePriceInUSD = uint256(getNativePrice());
+        uint256 StablePriceInUSD = uint256(getStablePrice());
+        uint256 totalCollateralInUSD = (userColNative * NativePriceInUSD) / 1e18 + (userColStable * StablePriceInUSD) / (1e18);
         return totalCollateralInUSD;
     }
 
