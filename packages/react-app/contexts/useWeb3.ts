@@ -1,17 +1,20 @@
 import { BrowserProvider, Contract, parseUnits } from "ethers";
-import { useAccount } from "wagmi";
+import { useAccount, Config, useWriteContract, useReadContract } from "wagmi";
+import {WriteContractMutate} from "wagmi/query";
 import { useState, useEffect } from "react";
 import StableTokenABI from "./cusd-abi.json";
 import CollateralManagerABI from "./CollateralManager.json";
 import LoanManagerABI from "./LoanManager.json"
 import { Address } from "viem";
+import { readContract } from "viem/actions";
 
 export const useWeb3 = () => {
   const { address } = useAccount();
-  const COLLATERAL_MANAGER_CONTRACT = "0x0BA2D7e1f892787DCB83061B6B58b3eda0c9B842";
-  const cUER_CONTRACT_ADDRESS = "0x10c892a6ec43a53e45d0b916b4b7d383b1b78c0f";
-  const LOAN_MANAGER_CONTRACT = "0x9a7c50e9eE3B3F12FE1121b621a71AEF4f150AeC";
-  const cKES_MOCK_TOCKEN = "0x874069fa1eb16d44d622f2e0ca25eea172369bc1";
+  const COLLATERAL_MANAGER_CONTRACT = "0x7629C8b277f46B9B60cFC5e7EeFaE59c5D9a060C";
+  const USDC_CONTRACT_ADDRESS = "0x036CbD53842c5426634e7929541eC2318f3dCF7e";
+  const LOAN_MANAGER_CONTRACT = "0xEc3e425197140d7336994942580c50d4f3e57C87";
+
+  const {writeContract} = useWriteContract();
 
   
 
@@ -46,29 +49,72 @@ export const useWeb3 = () => {
     return result;  // Return the result directly
   };
 
-  const depositNativeCollateral = async (amount: string) => {
+  const depositNativeCollateral = async (amount: string, func: WriteContractMutate<Config,unknown>) => {
     const amountInWei = parseUnits(amount, 18);
-    return await executeTransaction({ contractAddress: COLLATERAL_MANAGER_CONTRACT, abi: CollateralManagerABI.abi, method: "depositNativeCollateral", args: [{ value: amountInWei }] });
+
+    try{
+      const tx = writeContract({
+        abi: CollateralManagerABI.abi,
+        address: COLLATERAL_MANAGER_CONTRACT,
+        functionName: "depositNativeCollateral",
+        value: amountInWei,
+      });
+    } catch (e) {
+      console.log(e);
+    }
   };
 
-  const depositStableCollateral = async (amount: string) => {
-    const amountInWei = parseUnits(amount, 18);
+  const depositStableCollateral = async (amount: string, func: WriteContractMutate<Config,unknown>) => {
+    const amountInWei = parseUnits(amount, 6);
+
+    try{
+      writeContract({
+        abi: StableTokenABI.abi,
+        address: USDC_CONTRACT_ADDRESS,
+        functionName: "approve",
+        args: [COLLATERAL_MANAGER_CONTRACT, amountInWei],
+      });
+
+      const tx = writeContract({
+        abi: CollateralManagerABI.abi,
+        address: COLLATERAL_MANAGER_CONTRACT,
+        functionName: "depositStableCollateral",
+        args: [amountInWei],
+      });
+      console.log(tx);
+      // return tx;
+    } catch (e) {
+      console.error(e);
+    }
+
 
     // Approve the collateral manager to spend USDT
-    await executeTransaction({ contractAddress: cUER_CONTRACT_ADDRESS, abi: StableTokenABI.abi, method: "approve", args: [COLLATERAL_MANAGER_CONTRACT, amountInWei] });
+    // await executeTransaction({ contractAddress: cUER_CONTRACT_ADDRESS, abi: StableTokenABI.abi, method: "approve", args: [COLLATERAL_MANAGER_CONTRACT, amountInWei] });
 
     // Deposit USDT collateral
-    return await executeTransaction({ contractAddress: COLLATERAL_MANAGER_CONTRACT, abi: CollateralManagerABI.abi, method: "depositStableCollateral", args: [amountInWei] });
+    // return await executeTransaction({ contractAddress: COLLATERAL_MANAGER_CONTRACT, abi: CollateralManagerABI.abi, method: "depositStableCollateral", args: [amountInWei] });
   };
 
   const getMaxLoanAmount = async () => {
-    const max_amount =  await executeReadOnly({ contractAddress: LOAN_MANAGER_CONTRACT, abi: LoanManagerABI.abi, method: "getMaxLoanAmount", args: [] });
-    return max_amount;
+    try{
+      const tx = useReadContract({
+        abi: LoanManagerABI.abi,
+        address: LOAN_MANAGER_CONTRACT,
+        functionName: "getMaxLoanAmount",
+        args: [address],
+      })
+      return tx;
+    }
+    catch (e) {
+      console.error(e);
+    }
   };
 
   const getCollateralBalanceinUSD = async () => {
-    const userColl =  await executeReadOnly({ contractAddress: LOAN_MANAGER_CONTRACT, abi: LoanManagerABI.abi, method: "getCollateralBalanceinUSD", args: [address] });
-    return userColl;
+    // const userColl =  await executeReadOnly({ contractAddress: LOAN_MANAGER_CONTRACT, abi: LoanManagerABI.abi, method: "getCollateralBalanceinUSD", args: [address] });
+    // return userColl;
+    return 1;
+
   };
 
   const requestLoan = async (amount: string) => {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DepositModal from './DepositModal';
 import { useWeb3 } from '@/contexts/useWeb3';
+import { useWriteContract } from 'wagmi';
 
 type CardProps = {
   title: string;
@@ -11,6 +12,7 @@ type CardProps = {
 
 const CardComponent: React.FC<CardProps> = ({ title, interestRate, imageUrl, redirectToLoanDashboard }) => {
   const { address, depositNativeCollateral, depositStableCollateral } = useWeb3();
+  const { isError, isPending ,writeContract, error } = useWriteContract();
 
   useEffect(() => {
     setUserAddress(address ?? null);
@@ -21,17 +23,23 @@ const CardComponent: React.FC<CardProps> = ({ title, interestRate, imageUrl, red
   
   const handleDepositCeloCollateral = async (amount: number) => {
     try {
-      await depositNativeCollateral(amount.toString());
-      console.log("Celo collateral deposited: ", amount);
+      await depositNativeCollateral(amount.toString(), writeContract);
+      
+      console.log("Native collateral deposited: ", amount);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleDepositCEURCollateral = async (amount: number) => {
+  const handleDepositNativeCollateral = async (amount: number) => {
     try {
-      await depositStableCollateral(amount.toString());
-      console.log("USDT collateral deposited: ", amount);
+      await depositStableCollateral(amount.toString(), writeContract);
+
+      // console.log(isError)
+      // console.log(isPending)
+      // console.log(error);
+      
+      // if (!isError)console.log("USDT collateral deposited: ", amount);
     } catch (error) {
       console.error(error);
     }
@@ -66,7 +74,7 @@ const CardComponent: React.FC<CardProps> = ({ title, interestRate, imageUrl, red
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)} 
         onDepositCelo={handleDepositCeloCollateral}
-        onDepositStableCoin={handleDepositCEURCollateral} 
+        onDepositStableCoin={handleDepositNativeCollateral} 
         title={title} 
       />
     </div>
