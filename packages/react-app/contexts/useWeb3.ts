@@ -12,7 +12,7 @@ export const useWeb3 = () => {
   const { address } = useAccount();
   const COLLATERAL_MANAGER_CONTRACT = "0x7629C8b277f46B9B60cFC5e7EeFaE59c5D9a060C";
   const USDC_CONTRACT_ADDRESS = "0x036CbD53842c5426634e7929541eC2318f3dCF7e";
-  const LOAN_MANAGER_CONTRACT = "0xEc3e425197140d7336994942580c50d4f3e57C87";
+  const LOAN_MANAGER_CONTRACT = "0x6B739E5ca92a1F8C40C7D6c1A32533AfE7f7eFc9";
 
   const {writeContract} = useWriteContract();
 
