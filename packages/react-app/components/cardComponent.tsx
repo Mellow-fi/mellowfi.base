@@ -26,16 +26,21 @@ const CardComponent: React.FC<CardProps> = ({ title, interestRate, imageUrl }) =
     try {
       await depositNativeCollateral(amount.toString(), writeContract);
       
-      console.log("Celo collateral deposited: ", amount);
+      console.log("Native collateral deposited: ", amount);
     } catch (error) {
       console.error(error);
     }
   };
-  const handleDepositCEURCollateral = async (amount: number) => {
+
+  const handleDepositNativeCollateral = async (amount: number) => {
     try {
-      const tx = await depositStableCollateral(amount.toString(), writeContract);
+      await depositStableCollateral(amount.toString(), writeContract);
+
+      // console.log(isError)
+      // console.log(isPending)
+      // console.log(error);
       
-      console.log("USDT collateral deposited: ", amount);
+      // if (!isError)console.log("USDT collateral deposited: ", amount);
     } catch (error) {
       console.error(error);
     }
@@ -62,7 +67,7 @@ const CardComponent: React.FC<CardProps> = ({ title, interestRate, imageUrl }) =
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)} 
         onDepositCelo={handleDepositCeloCollateral}
-        onDepositStableCoin={handleDepositCEURCollateral} 
+        onDepositStableCoin={handleDepositNativeCollateral} 
         title={title} 
       />
     </div>
