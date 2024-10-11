@@ -4,6 +4,7 @@ import Navbar from './NavBar';
 import Footer from './Footer';
 import { useRouter } from 'next/router'; 
 import { get } from 'http';
+import { useReadContract } from 'wagmi';
 
 interface LoanData {
   loanAmount: number;
@@ -13,6 +14,9 @@ interface LoanData {
 }
 
 const LoanDashboard: React.FC = () => {
+
+  const {readContract} = useReadContract();
+  
   const [loanData, setLoanData] = useState<LoanData | null>(null);
   const [loanBalance, setLoanBalance] = useState<number | null>(null);  // State for loan balance
   const { getMaxLoanAmount, getCollateralBalanceinUSD, requestLoan, repayLoan, getLoanBalancewithInterest } = useWeb3();
