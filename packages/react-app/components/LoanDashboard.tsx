@@ -18,83 +18,36 @@ const LoanDashboard: React.FC = () => {
   // const {readContract} = useReadContract();
   const address = useAccount().address;
 
-  const {data: result} = useReadContract({
+  const {data: collinUSD} = useReadContract({
     abi: LoanManagerABI.abi,
     address: '0x6b175474e89094c44da98b954eedeac495271d0f',
     functionName: 'getCollinUSD',
   })
 
-  console.log(result);
+  console.log(collinUSD);
 
 
   
 
   const getCollateralBalanceinUSD = async () => {
     // get value from loanmanager using readContract
-    return 1
+    collinUSD;
 
   };
   
   const [loanData, setLoanData] = useState<LoanData | null>(null);
   const [loanBalance, setLoanBalance] = useState<number | null>(null);
-  const { requestLoan, repayLoan, getLoanBalancewithInterest } = useWeb3();
   const router = useRouter(); 
-
-  useEffect(() => {
-    const fetchLoanData = async () => {
-      try {
-        const collateralAmount = await getCollateralBalanceinUSD();
-        const loanAmount = collateralAmount * 0.5;
-        const loanToValueRatio = loanAmount / collateralAmount;
-        const isSufficientlyCollateralized = loanToValueRatio <= 0.5;
-        setLoanData({
-          loanAmount,
-          collateralAmount,
-          loanToValueRatio,
-          isSufficientlyCollateralized,
-        });
-      } catch (error) {
-        console.error("Error fetching loan data:", error);
-      }
-    };
-    fetchLoanData();
-  }, []);
   const getLoanBalance = async () => {
-    try {
-      const loanBalance = await getLoanBalancewithInterest();
-      setLoanBalance(loanBalance);
-    } catch (error) {
-      console.error("Error fetching loan balance:", error);
-    }
   };
+
   getLoanBalance();
 
   const handleBorrowLoan = async () => {
-    try {
-      if (loanData) {
-        await requestLoan(loanData.loanAmount.toString());
-        alert("Loan request successful!");
-      } else {
-        console.error("Loan data is null.");
-      }
-    } catch (error) {
-      console.error("Error borrowing loan:", error);
-      alert("Error borrowing loan. Please try again.");
-    }
+    
   };
 
   const handleRepayLoan = async () => {
-    try {
-      if (loanData) {
-        await repayLoan(loanData.loanAmount.toString());
-        alert("Loan repayment successful!");
-      } else {
-        console.error("Loan data is null.");
-      }
-    } catch (error) {
-      console.error("Error repaying loan:", error);
-      alert("Error repaying loan. Please try again.");
-    }
   };
 
   const handleBack = () => {
