@@ -6,14 +6,15 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Pausable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import "./CollateralManager.sol";
+import "./MellowFiCollateralManager.sol";
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
 
 contract MellowFinanceLoanManager is ReentrancyGuard, Ownable, Pausable {
 
     ERC20 public cUSDToken; 
-    CollateralManager public collateralManager;
+    MellowFinanceCollateralManager public collateralManager;
     uint256 public fundPool;
+    uint256 public constant LOAN_SIZE_FACTOR = 5;
 
     uint256 public defaultDuration = 15 days;   // Extra time before liquidation after loan is due
     uint256 public baseInterestRate = 5; // Base interest rate in percentage (can vary)
@@ -35,6 +36,7 @@ contract MellowFinanceLoanManager is ReentrancyGuard, Ownable, Pausable {
         uint256 totalLoansRepaid;
         uint256 totalLoansDefaulted;
         uint256 creditScore;
+        uint256 lastLoanAmount;
     }
 
     mapping(address => Loan) public userLoans;
@@ -50,7 +52,7 @@ contract MellowFinanceLoanManager is ReentrancyGuard, Ownable, Pausable {
 
     constructor(address _MFCM) Ownable(msg.sender) {
         cUSDToken = ERC20(0x036CbD53842c5426634e7929541eC2318f3dCF7e ); // USDC on BASE SEPOLIA
-        collateralManager = CollateralManager(_MFCM); // COLLATERAL MANAGER on BASE SEPOLIA
+        collateralManager = MellowFinanceCollateralManager(_MFCM); // COLLATERAL MANAGER on BASE SEPOLIA
         nativePriceFeed = AggregatorV3Interface(0x3c65e28D357a37589e1C7C86044a9f44dDC17134); // baseETH price in cUSD in 6 decimal places
         stablePriceFeed = AggregatorV3Interface(0x3ec8593F930EA45ea58c968260e6e9FF53FC934f); // USDC price in USD in 6 decimal places
     }
@@ -85,28 +87,47 @@ contract MellowFinanceLoanManager is ReentrancyGuard, Ownable, Pausable {
         return price;
     }
 
+    function getCollinUSD() public view returns (uint256) {
+    (uint256 userColNative, uint256 userColStable) = collateralManager.getCollateralBalance(msg.sender);
+    uint256 nativePriceInUSD = uint256(getNativePrice());
+    uint256 stablePriceInUSD = uint256(getStablePrice());
+
+    uint256 nativeCollateralInUSD = (userColNative * nativePriceInUSD);
+    uint256 stableCollateralInUSD = (userColStable * stablePriceInUSD);
+    uint256 userTotalColinUSD = nativeCollateralInUSD + stableCollateralInUSD;
+    return (userTotalColinUSD);
+    }
+
+    function getCollinUSD(address _user) internal view returns (uint256) {
+        (uint256 userColNative, uint256 userColStable) = collateralManager.getCollateralBalance(_user);
+        uint256 nativePriceInUSD = uint256(getNativePrice());
+        uint256 stablePriceInUSD = uint256(getStablePrice());
+
+        uint256 nativeCollateralInUSD = (userColNative * nativePriceInUSD);
+        uint256 stableCollateralInUSD = (userColStable * stablePriceInUSD);
+        uint256 userTotalColinUSD = nativeCollateralInUSD + stableCollateralInUSD;
+        return (userTotalColinUSD / 1e8);
+    }
+
+
+
     // Request a loan based on the user's collateral
     function requestLoan(uint256 _loanAmount, uint256 _desiredInterestRate) external nonReentrant whenNotPaused {
         require(_loanAmount > 0, "LoanManager: Loan amount must be greater than 0");
         require(userLoans[msg.sender].amount == 0, "LoanManager: Existing loan must be repaid first");
 
         // Check user collateral and calculate max loan
-        (uint256 userColNative, uint256 userColStable) = collateralManager.getCollateralBalance(msg.sender);
-        uint256 nativePriceInUSD = uint256(getNativePrice());
-        uint256 stablePriceInUSD = uint256(getStablePrice());
-        uint256 nativeCollateralInUSD = (userColNative * nativePriceInUSD) / 1e12;
-        uint256 stableCollateralInUSD = (userColStable * stablePriceInUSD) / 1e18;
-        uint256 userTotalColinUSD = nativeCollateralInUSD + stableCollateralInUSD;
-
+        uint256 userTotalColinUSD = getCollinUSD();
         uint256 collateralRatio = 150; // Default collateral ratio (can vary based on credit score)
-        uint256 maxLoanAmount = (userTotalColinUSD * 1e18) / collateralRatio;
+        uint256 maxLoanAmount = (userTotalColinUSD * 100) / collateralRatio;
 
-        require(maxLoanAmount >= (_loanAmount * collateralRatio / 100), "LoanManager: Insufficient collateral");
+        require(_loanAmount <= maxLoanAmount, "LoanManager: Insufficient collateral");
+
 
         // Store loan information
         Loan memory newLoan = Loan({
             amount: _loanAmount,
-            interestRate: _desiredInterestRate > 0 ? _desiredInterestRate : baseInterestRate,
+            interestRate: _desiredInterestRate > baseInterestRate ? _desiredInterestRate : baseInterestRate,
             startTime: block.timestamp,
             collateral: userTotalColinUSD,
             collateralRatio: collateralRatio,
@@ -115,19 +136,16 @@ contract MellowFinanceLoanManager is ReentrancyGuard, Ownable, Pausable {
         });
         userLoans[msg.sender] = newLoan;
 
+        require(cUSDToken.transfer(msg.sender, _loanAmount), "LoanManager: Loan transfer failed");
+
         // Emit loan requested event
+        fundPool -= _loanAmount;
         emit LoanRequested(msg.sender, _loanAmount, userTotalColinUSD);
-    }
-
-    // Issue the loan after collateral verification
-    function issueLoan(address _user) external onlyOwner whenNotPaused {
-        Loan storage loan = userLoans[_user];
-        require(loan.amount > 0, "LoanManager: No loan request found");
-        require(cUSDToken.transfer(_user, loan.amount), "LoanManager: Loan transfer failed");
+        emit LoanIssued(msg.sender, _loanAmount, userTotalColinUSD);
         
-        emit LoanIssued(_user, loan.amount, loan.collateral);
     }
 
+    
     // Partial loan repayment with interest accrual
     function repayLoan(uint256 _repayAmount) external nonReentrant whenNotPaused {
         Loan storage loan = userLoans[msg.sender];
@@ -137,13 +155,20 @@ contract MellowFinanceLoanManager is ReentrancyGuard, Ownable, Pausable {
         uint256 loanWithInterest = calculateLoanWithInterest(msg.sender);
         require(_repayAmount >= loanWithInterest, "LoanManager: Insufficient repayment");
 
-        require(cUSDToken.transferFrom(msg.sender, address(this), _repayAmount), "LoanManager: Repayment transfer failed");
+        cUSDToken.transferFrom(msg.sender, address(this), _repayAmount);
 
         loan.isRepaid = true;
         updateUserCreditScore(msg.sender, true);
 
         collateralManager.releaseFunds(msg.sender);
         emit LoanRepaid(msg.sender, loan.amount, loan.collateral);
+    }
+
+
+    function getMaxLoan() public view returns (uint256) {
+        uint256 userTotalColinUSD = getCollinUSD(msg.sender);
+        uint256 maxLoanAmount = (userTotalColinUSD * 100) / 150;
+        return maxLoanAmount;
     }
 
     function calculateLoanWithInterest(address _user) public view returns (uint256) {
@@ -162,17 +187,25 @@ contract MellowFinanceLoanManager is ReentrancyGuard, Ownable, Pausable {
 
     // Update user credit score after loan repayment or default
     function updateUserCreditScore(address _user, bool isRepaid) internal {
-        UserCredit storage credit = userCreditScores[_user];
-        if (isRepaid) {
-            credit.totalLoansRepaid++;
-        } else {
-            credit.totalLoansDefaulted++;
-        }
+    UserCredit storage credit = userCreditScores[_user];
+    uint256 loanAmount = userLoans[_user].amount;
 
-        // Example scoring system: Simple credit score increase/decrease based on repayment/default history
-        // This system will need some updates 
-        credit.creditScore = credit.totalLoansRepaid * 10 - credit.totalLoansDefaulted * 5;
+    if (isRepaid) {
+        credit.totalLoansRepaid++;
+        // Increase credit score based on loan size
+        credit.creditScore += loanAmount * LOAN_SIZE_FACTOR;
+    } else {
+        credit.totalLoansDefaulted++;
+        // Decrease credit score based on loan size
+        credit.creditScore -= loanAmount * LOAN_SIZE_FACTOR;
     }
+
+    // Example scoring system: Simple credit score increase/decrease based on repayment/default history
+    credit.creditScore += credit.totalLoansRepaid * 10 - credit.totalLoansDefaulted * 5;
+
+    // Update last loan amount
+    credit.lastLoanAmount = loanAmount;
+}
 
     // Add funds to the loan pool
     function addFunds(uint256 _amount) external onlyOwner {
@@ -198,7 +231,7 @@ contract MellowFinanceLoanManager is ReentrancyGuard, Ownable, Pausable {
 
     // make sure the fund pool is emptied before upgrading contracts
     function returnFunds() public onlyOwner {
-        cUSDToken.transfer(owner(), fundPool);
+        cUSDToken.transfer(owner(), cUSDToken.balanceOf(address(this)));
         fundPool = 0;
     }
 }

@@ -3,7 +3,8 @@ import { useWeb3 } from '@/contexts/useWeb3';
 import Navbar from './NavBar';
 import Footer from './Footer';
 import { useRouter } from 'next/router'; 
-import { useReadContract } from 'wagmi';
+import { useReadContract, useAccount } from 'wagmi';
+import LoanManagerABI from '../contexts/MellowFinanceLoanManager.json';
 
 interface LoanData {
   loanAmount: number;
@@ -15,35 +16,49 @@ interface LoanData {
 const LoanDashboard: React.FC = () => {
 
   // const {readContract} = useReadContract();
+  const address = useAccount().address;
+
+  const {data: result} = useReadContract({
+    abi: LoanManagerABI.abi,
+    address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+    functionName: 'getCollinUSD',
+  })
+
+  console.log(result);
+
+
+  
+
+  const getCollateralBalanceinUSD = async () => {
+    // get value from loanmanager using readContract
+    return 1
+
+  };
   
   const [loanData, setLoanData] = useState<LoanData | null>(null);
   const [loanBalance, setLoanBalance] = useState<number | null>(null);
-  const { getMaxLoanAmount, getCollateralBalanceinUSD, requestLoan, repayLoan, getLoanBalancewithInterest } = useWeb3();
+  const { requestLoan, repayLoan, getLoanBalancewithInterest } = useWeb3();
   const router = useRouter(); 
 
   useEffect(() => {
     const fetchLoanData = async () => {
       try {
-        const maxLoanAmount = await getMaxLoanAmount();
-        if (maxLoanAmount === undefined) {
-          throw new Error("maxLoanAmount is undefined");
-        }
-        const formattedLoanAmount = (parseFloat(maxLoanAmount.toString()) / Math.pow(10, 8)).toFixed(4);
-        const formattedCollateralAmount = (parseFloat((await getCollateralBalanceinUSD()).toString()) / Math.pow(10, 8)).toFixed(4);
-        const updatedLoanData: LoanData = {
-          loanAmount: parseFloat(formattedLoanAmount), 
-          collateralAmount: parseFloat(formattedCollateralAmount), 
-          loanToValueRatio: 1.5,
-          isSufficientlyCollateralized: true,
-        };
-        setLoanData(updatedLoanData);
+        const collateralAmount = await getCollateralBalanceinUSD();
+        const loanAmount = collateralAmount * 0.5;
+        const loanToValueRatio = loanAmount / collateralAmount;
+        const isSufficientlyCollateralized = loanToValueRatio <= 0.5;
+        setLoanData({
+          loanAmount,
+          collateralAmount,
+          loanToValueRatio,
+          isSufficientlyCollateralized,
+        });
       } catch (error) {
         console.error("Error fetching loan data:", error);
       }
     };
     fetchLoanData();
-  }, [getMaxLoanAmount, getCollateralBalanceinUSD]);
-
+  }, []);
   const getLoanBalance = async () => {
     try {
       const loanBalance = await getLoanBalancewithInterest();

@@ -10,7 +10,7 @@ async function main() {
 
     // Deploy Loan Manager
     const Loan = await hre.ethers.getContractFactory("MellowFinanceLoanManager");
-    const loan = await Loan.deploy();
+    const loan = await Loan.deploy("0x0c211c2A104eb0415b33F453f2699265760A5A51");
     await loan.waitForDeployment();
     logContractDeployed("LoanManager", loan);
 

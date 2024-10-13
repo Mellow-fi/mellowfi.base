@@ -3,16 +3,16 @@ import { useAccount, Config, useWriteContract, useReadContract } from "wagmi";
 import {WriteContractMutate} from "wagmi/query";
 import { useState, useEffect } from "react";
 import StableTokenABI from "./cusd-abi.json";
-import CollateralManagerABI from "./CollateralManager.json";
-import LoanManagerABI from "./LoanManager.json"
+import CollateralManagerABI from "./MellowFinanceCollateralManager.json";
+import LoanManagerABI from "./MellowFinanceLoanManager.json"
 import { Address } from "viem";
 import { readContract } from "viem/actions";
 
 export const useWeb3 = () => {
   const { address } = useAccount();
-  const COLLATERAL_MANAGER_CONTRACT = "0x7629C8b277f46B9B60cFC5e7EeFaE59c5D9a060C";
+  const COLLATERAL_MANAGER_CONTRACT = "0x0c211c2A104eb0415b33F453f2699265760A5A51";
   const USDC_CONTRACT_ADDRESS = "0x036CbD53842c5426634e7929541eC2318f3dCF7e";
-  const LOAN_MANAGER_CONTRACT = "0x6B739E5ca92a1F8C40C7D6c1A32533AfE7f7eFc9";
+  const LOAN_MANAGER_CONTRACT = "0x93a731F8533B08a9C64a06507B29D1718996E95b";
 
   const {writeContract} = useWriteContract();
 
@@ -95,27 +95,22 @@ export const useWeb3 = () => {
     // return await executeTransaction({ contractAddress: COLLATERAL_MANAGER_CONTRACT, abi: CollateralManagerABI.abi, method: "depositStableCollateral", args: [amountInWei] });
   };
 
-  const getMaxLoanAmount = async () => {
-    try{
-      const tx = useReadContract({
-        abi: LoanManagerABI.abi,
-        address: LOAN_MANAGER_CONTRACT,
-        functionName: "getMaxLoanAmount",
-        args: [address],
-      })
-      return tx;
-    }
-    catch (e) {
-      console.error(e);
-    }
-  };
+  // const getMaxLoanAmount = async () => {
+  //   try{
+  //     const tx = useReadContract({
+  //       abi: LoanManagerABI.abi,
+  //       address: LOAN_MANAGER_CONTRACT,
+  //       functionName: "getMaxLoanAmount",
+  //       args: [address],
+  //     })
+  //     return tx;
+  //   }
+  //   catch (e) {
+  //     console.error(e);
+  //   }
+  // };
 
-  const getCollateralBalanceinUSD = async () => {
-    // const userColl =  await executeReadOnly({ contractAddress: LOAN_MANAGER_CONTRACT, abi: LoanManagerABI.abi, method: "getCollateralBalanceinUSD", args: [address] });
-    // return userColl;
-    return 1;
-
-  };
+  
 
   const requestLoan = async (amount: string) => {
     const amountInWei = parseUnits(amount, 18);
@@ -128,7 +123,8 @@ export const useWeb3 = () => {
   }
 
   const getLoanBalancewithInterest = async () => {
-    return await executeReadOnly({ contractAddress: LOAN_MANAGER_CONTRACT, abi: LoanManagerABI.abi, method: "getLoanBalancewithInterest", args: [address] });
+    // return await executeReadOnly({ contractAddress: LOAN_MANAGER_CONTRACT, abi: LoanManagerABI.abi, method: "getLoanBalancewithInterest", args: [address] });
+    return 1
   }
 
   const releaseFunds = async () => {
@@ -147,8 +143,7 @@ export const useWeb3 = () => {
     signTransaction,
     depositNativeCollateral,
     depositStableCollateral,
-    getMaxLoanAmount,
-    getCollateralBalanceinUSD,
+    // getMaxLoanAmount,
     requestLoan,
     repayLoan,
     releaseFunds,
