@@ -3,7 +3,8 @@ import { useWeb3 } from '@/contexts/useWeb3';
 import Navbar from './NavBar';
 import Footer from './Footer';
 import { useRouter } from 'next/router'; 
-import { useReadContract } from 'wagmi';
+import { useReadContract, useAccount } from 'wagmi';
+import LoanManagerABI from '../contexts/MellowFinanceLoanManager.json';
 
 interface LoanData {
   loanAmount: number;
@@ -15,71 +16,38 @@ interface LoanData {
 const LoanDashboard: React.FC = () => {
 
   // const {readContract} = useReadContract();
+  const address = useAccount().address;
+
+  const {data: collinUSD} = useReadContract({
+    abi: LoanManagerABI.abi,
+    address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+    functionName: 'getCollinUSD',
+  })
+
+  console.log(collinUSD);
+
+
+  
+
+  const getCollateralBalanceinUSD = async () => {
+    // get value from loanmanager using readContract
+    collinUSD;
+
+  };
   
   const [loanData, setLoanData] = useState<LoanData | null>(null);
   const [loanBalance, setLoanBalance] = useState<number | null>(null);
-  const { getMaxLoanAmount, getCollateralBalanceinUSD, requestLoan, repayLoan, getLoanBalancewithInterest } = useWeb3();
   const router = useRouter(); 
-
-  useEffect(() => {
-    const fetchLoanData = async () => {
-      try {
-        const maxLoanAmount = await getMaxLoanAmount();
-        if (maxLoanAmount === undefined) {
-          throw new Error("maxLoanAmount is undefined");
-        }
-        const formattedLoanAmount = (parseFloat(maxLoanAmount.toString()) / Math.pow(10, 8)).toFixed(4);
-        const formattedCollateralAmount = (parseFloat((await getCollateralBalanceinUSD()).toString()) / Math.pow(10, 8)).toFixed(4);
-        const updatedLoanData: LoanData = {
-          loanAmount: parseFloat(formattedLoanAmount), 
-          collateralAmount: parseFloat(formattedCollateralAmount), 
-          loanToValueRatio: 1.5,
-          isSufficientlyCollateralized: true,
-        };
-        setLoanData(updatedLoanData);
-      } catch (error) {
-        console.error("Error fetching loan data:", error);
-      }
-    };
-    fetchLoanData();
-  }, [getMaxLoanAmount, getCollateralBalanceinUSD]);
-
   const getLoanBalance = async () => {
-    try {
-      const loanBalance = await getLoanBalancewithInterest();
-      setLoanBalance(loanBalance);
-    } catch (error) {
-      console.error("Error fetching loan balance:", error);
-    }
   };
+
   getLoanBalance();
 
   const handleBorrowLoan = async () => {
-    try {
-      if (loanData) {
-        await requestLoan(loanData.loanAmount.toString());
-        alert("Loan request successful!");
-      } else {
-        console.error("Loan data is null.");
-      }
-    } catch (error) {
-      console.error("Error borrowing loan:", error);
-      alert("Error borrowing loan. Please try again.");
-    }
+    
   };
 
   const handleRepayLoan = async () => {
-    try {
-      if (loanData) {
-        await repayLoan(loanData.loanAmount.toString());
-        alert("Loan repayment successful!");
-      } else {
-        console.error("Loan data is null.");
-      }
-    } catch (error) {
-      console.error("Error repaying loan:", error);
-      alert("Error repaying loan. Please try again.");
-    }
   };
 
   const handleBack = () => {

@@ -1,0 +1,4 @@
+{
+    "security.olympix.project.includePath": "/contracts",
+    "security.olympix.project.testsPath": "/test"
+}

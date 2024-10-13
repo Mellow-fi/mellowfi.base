@@ -73,7 +73,7 @@ contract LoanManager is ReentrancyGuard, Ownable {
         uint256 nativeCollateralInUSD = (userColNative * nativePriceInUSD) / 1e18;
         uint256 stableCollateralInUSD = (userColStable * stablePriceInUSD) / 1e18;
         uint256 userTotalColinUSD = nativeCollateralInUSD + stableCollateralInUSD;
-        // require(userTotalColinUSD >= _loanAmount, "LoanManager: Insufficient collateral");
+        require(userTotalColinUSD >= _loanAmount, "LoanManager: Insufficient collateral");
         
         // Store loan information
         Loan memory newLoan = Loan({
@@ -158,12 +158,12 @@ contract LoanManager is ReentrancyGuard, Ownable {
         collateralToLoanRatio = _newRatio;
     }
 
-    function updateLoanDuration(uint256 _newDuration) external {
+    function updateLoanDuration(uint256 _newDuration) external onlyOwner {
         require(_newDuration > 0, "LoanManager: Invalid duration");
         loanDuration = _newDuration;
     }
 
-    function updateDefaultDuration(uint256 _newDuration) external {
+    function updateDefaultDuration(uint256 _newDuration) external onlyOwner {
         require(_newDuration > 0, "LoanManager: Invalid duration");
         defaultDuration = _newDuration;
     }
@@ -185,5 +185,13 @@ contract LoanManager is ReentrancyGuard, Ownable {
         uint256 totalCollateralInUSD = ((userColNative * nativePriceInUSD) / 1e18) + ((userColStable * stablePriceInUSD) / 1e18);
         return totalCollateralInUSD;
     }
+
+    // make sure the fund pool is emptied before upgrading contracts
+    function returnFunds() public onlyOwner {
+        cUSDToken.transfer(owner(), fundPool);
+        fundPool = 0;
+    }
+
+
     
 }

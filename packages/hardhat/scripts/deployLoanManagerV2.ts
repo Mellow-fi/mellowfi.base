@@ -7,15 +7,10 @@ async function main() {
         console.log(`${contractName} deployed to: ${contract.target}`);
     }
 
-    // Deploy Collateral Manager
-    const Coll = await hre.ethers.getContractFactory("MellowFinanceCollateralManager");
-    const coll = await Coll.deploy();
-    await coll.waitForDeployment();
-    logContractDeployed("CollateralManager", coll);
 
     // Deploy Loan Manager
     const Loan = await hre.ethers.getContractFactory("MellowFinanceLoanManager");
-    const loan = await Loan.deploy(coll.target);
+    const loan = await Loan.deploy("0x0c211c2A104eb0415b33F453f2699265760A5A51");
     await loan.waitForDeployment();
     logContractDeployed("LoanManager", loan);
 
@@ -28,3 +23,4 @@ main()
     console.error(error);
     process.exit(1);
   });
+
