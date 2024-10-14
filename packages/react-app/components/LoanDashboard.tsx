@@ -17,14 +17,21 @@ const LoanDashboard: React.FC = () => {
 
   // const {readContract} = useReadContract();
   const address = useAccount().address;
+  
 
   const {data: collinUSD} = useReadContract({
     abi: LoanManagerABI.abi,
-    address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+    address: '0x23386834A7D36FC173A16B8dc8dA92c648AA340f',
     functionName: 'getCollinUSD',
+    args:[address]
   })
 
   console.log(collinUSD);
+
+  const mxLoanStr = Number(collinUSD).toString();
+  const mxLoanFloat = parseFloat(mxLoanStr);
+  const formattedLoanAmount = (mxLoanFloat / 1e18).toFixed(4); // Adjust precision as needed
+  console.log(formattedLoanAmount);
 
 
   

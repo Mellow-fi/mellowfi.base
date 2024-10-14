@@ -87,26 +87,26 @@ contract MellowFinanceLoanManager is ReentrancyGuard, Ownable, Pausable {
         return price;
     }
 
-    function getCollinUSD() public view returns (uint256) {
-    (uint256 userColNative, uint256 userColStable) = collateralManager.getCollateralBalance(msg.sender);
-    uint256 nativePriceInUSD = uint256(getNativePrice());
-    uint256 stablePriceInUSD = uint256(getStablePrice());
+    // function getCollinUSD() public view returns (uint256) {
+    // (uint256 userColNative, uint256 userColStable) = collateralManager.getCollateralBalance(msg.sender);
+    // uint256 nativePriceInUSD = uint256(getNativePrice());
+    // uint256 stablePriceInUSD = uint256(getStablePrice());
 
-    uint256 nativeCollateralInUSD = (userColNative * nativePriceInUSD);
-    uint256 stableCollateralInUSD = (userColStable * stablePriceInUSD);
-    uint256 userTotalColinUSD = nativeCollateralInUSD + stableCollateralInUSD;
-    return (userTotalColinUSD);
-    }
+    // uint256 nativeCollateralInUSD = (userColNative * nativePriceInUSD);
+    // uint256 stableCollateralInUSD = (userColStable * stablePriceInUSD);
+    // uint256 userTotalColinUSD = nativeCollateralInUSD + stableCollateralInUSD;
+    // return (userTotalColinUSD);
+    // }
 
-    function getCollinUSD(address _user) internal view returns (uint256) {
+    function getCollinUSD(address _user) public view returns (uint256) {
         (uint256 userColNative, uint256 userColStable) = collateralManager.getCollateralBalance(_user);
         uint256 nativePriceInUSD = uint256(getNativePrice());
         uint256 stablePriceInUSD = uint256(getStablePrice());
 
-        uint256 nativeCollateralInUSD = (userColNative * nativePriceInUSD);
-        uint256 stableCollateralInUSD = (userColStable * stablePriceInUSD);
+        uint256 nativeCollateralInUSD = (userColNative * nativePriceInUSD) / 1e8;
+        uint256 stableCollateralInUSD = (userColStable * stablePriceInUSD) / 1e6; 
         uint256 userTotalColinUSD = nativeCollateralInUSD + stableCollateralInUSD;
-        return (userTotalColinUSD / 1e8);
+        return (userTotalColinUSD);
     }
 
 
@@ -117,7 +117,7 @@ contract MellowFinanceLoanManager is ReentrancyGuard, Ownable, Pausable {
         require(userLoans[msg.sender].amount == 0, "LoanManager: Existing loan must be repaid first");
 
         // Check user collateral and calculate max loan
-        uint256 userTotalColinUSD = getCollinUSD();
+        uint256 userTotalColinUSD = getCollinUSD(msg.sender);
         uint256 collateralRatio = 150; // Default collateral ratio (can vary based on credit score)
         uint256 maxLoanAmount = (userTotalColinUSD * 100) / collateralRatio;
 
