@@ -32,7 +32,7 @@ const Login: React.FC = () => {
             {/* Title with Yarn Image */}
       <div className="text-4xl font-semibold mb-8 text-gray-800 flex items-center space-x-1">
         <span>Mellow  M</span>
-        <img src="../static/wool.png" alt="yarn" className="inline-block w-10 h-10" />
+        <Image src="../static/wool.png" alt="yarn" className="inline-block w-10 h-10" width={10} height={10} />
         <span>ney Magic</span>
       </div>
 

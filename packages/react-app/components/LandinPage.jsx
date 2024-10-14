@@ -47,7 +47,7 @@ const LandingPage = () => {
                         Welcome to <span className="font-semibold text-yellow-500">Mellow Finance</span>, your trusted partner in decentralized lending. We make borrowing simple, secure, and transparent by leveraging blockchain technology. 
                     </p>
                     <p className="text-lg text-gray-600 leading-relaxed max-w-3xl mx-auto mb-6">
-                        Our mission is to offer a user-friendly platform that allows you to deposit your crypto assets and receive loans with ease. Whether you're looking to make a major purchase or manage your finances, we’ve got you covered. 
+                        Our mission is to offer a user-friendly platform that allows you to deposit your crypto assets and receive loans with ease. Whether you are looking to make a major purchase or manage your finances, we’ve got you covered. 
                     </p>
                     <p className="text-lg text-gray-600 leading-relaxed max-w-3xl mx-auto">
                         With Mellow Finance, borrowing is as easy as depositing your crypto, getting your loan, and repaying when ready. All while ensuring the safety of your assets through smart contracts.

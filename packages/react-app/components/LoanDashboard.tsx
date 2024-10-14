@@ -29,10 +29,10 @@ const LoanDashboard: React.FC = () => {
   console.log(collinUSD);
   const availableloan = (Number(collinUSD)* 150/100).toString();
   const availableloanFloat = parseFloat(availableloan);
-  const formattedavailableloanFloat = (availableloanFloat / 1e18).toFixed(4)
+  const formattedavailableloanFloat = (availableloanFloat / 1e18).toFixed(2)
   const mxLoanStr = Number(collinUSD).toString();
   const mxLoanFloat = parseFloat(mxLoanStr);
-  const formattedLoanAmount = (mxLoanFloat / 1e18).toFixed(4); // Adjust precision as needed
+  const formattedLoanAmount = (mxLoanFloat / 1e18).toFixed(2); // Adjust precision as needed
 
   console.log(formattedLoanAmount);
   const router = useRouter(); 
