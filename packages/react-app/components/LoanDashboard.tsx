@@ -27,23 +27,14 @@ const LoanDashboard: React.FC = () => {
   })
 
   console.log(collinUSD);
-
+  const availableloan = (Number(collinUSD)* 150/100).toString();
+  const availableloanFloat = parseFloat(availableloan);
+  const formattedavailableloanFloat = (availableloanFloat / 1e18).toFixed(4)
   const mxLoanStr = Number(collinUSD).toString();
   const mxLoanFloat = parseFloat(mxLoanStr);
   const formattedLoanAmount = (mxLoanFloat / 1e18).toFixed(4); // Adjust precision as needed
+
   console.log(formattedLoanAmount);
-
-
-  
-
-  const getCollateralBalanceinUSD = async () => {
-    // get value from loanmanager using readContract
-    collinUSD;
-
-  };
-  
-  const [loanData, setLoanData] = useState<LoanData | null>(null);
-  const [loanBalance, setLoanBalance] = useState<number | null>(null);
   const router = useRouter(); 
   const getLoanBalance = async () => {
   };
@@ -73,16 +64,16 @@ const LoanDashboard: React.FC = () => {
             <div className="bg-white p-4 rounded-lg shadow-lg">
               <h3 className="text-2xl font-bold mb-4">Your Loan</h3>
               <div className="space-y-3 text-gray-700 text-sm">
-                <p><strong>Available Loan Amount:</strong> ${loanData?.collateralAmount?.toLocaleString()}</p>
-                <p><strong>Collateral Amount:</strong> ${loanData?.loanAmount.toLocaleString()}</p>
-                <p><strong>Loan-to-Value (LTV) Ratio:</strong> {loanData?.loanToValueRatio ? loanData.loanToValueRatio * 100 : 0}%</p>
-                <p><strong>Collateralization Status:</strong>
-                  {loanData?.isSufficientlyCollateralized ? (
+                <p><strong>Available Loan Amount:</strong> ${formattedavailableloanFloat}</p>
+                <p><strong>Collateral Amount:</strong> ${formattedLoanAmount}</p>
+                <p><strong>Loan-to-Value (LTV) Ratio:</strong> ${}</p>
+                {/* <p><strong>Collateralization Status:</strong>
+                  {loanData?.isSufficientlyCollateralized ? ( // how does this know?
                     <span className="text-green-600 font-bold"> Sufficient</span>
                   ) : (
                     <span className="text-red-600 font-bold"> Insufficient</span>
                   )}
-                </p>
+                </p> */}
               </div>
               <div className="mt-4">
                 <button
@@ -97,7 +88,7 @@ const LoanDashboard: React.FC = () => {
             <div className="bg-gray-100 p-4 rounded-lg shadow-lg">
               <h3 className="text-2xl font-bold mb-4">Repay Loan</h3>
               <p className="text-gray-700 text-sm">
-                <strong>Loan Taken:</strong> ${loanBalance !== null ? loanBalance.toLocaleString() : 'Loading...'}
+                <strong>Loan Taken:</strong> ${}
               </p>
               <div className="mt-4">
                 <button
