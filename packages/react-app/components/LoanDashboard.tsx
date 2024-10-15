@@ -144,12 +144,12 @@ const LoanDashboard: React.FC = () => {
 // Sidebar Component
 const Sidebar: React.FC<{ handleBack: () => void }> = ({ handleBack }) => {
   return (
-    <div className="w-64  bg-gray-600 text-white p-6 space-y-6 h-screen ">
+    <div className="w-64  bg-gray-400 text-white p-6 space-y-6 h-screen ">
       <h2 className="text-xl font-bold">Navigation</h2>
       <nav className="space-y-4">
         <button
           onClick={handleBack}
-          className="block w-full text-left bg-yellow-700 hover:bg-yellow-600 text-white font-bold py-2 px-4 mt-60 rounded-md shadow focus:outline-none focus:ring-2 focus:ring-yellow-300  focus:ring-gray-300 text-sm"
+          className="block w-full text-left  bg-yellow-400 hover:bg-yellow-500  text-white font-bold py-2 px-4 mt-60 rounded-md shadow focus:outline-none focus:ring-2 focus:ring-yellow-300  focus:ring-gray-300 text-sm"
         >
           Back to Pool List
         </button>
