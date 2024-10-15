@@ -20,6 +20,7 @@
     "@tanstack/react-query": "^5.56.2",
     "@wagmi/connectors": "^3.1.10",
     "ethers": "^6.13.3",
+    "firebase": "^10.14.1",
     "font-awesome": "^4.7.0",
     "next": "^13.4.2",
     "react": "18.2.0",

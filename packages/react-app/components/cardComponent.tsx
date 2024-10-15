@@ -52,7 +52,7 @@ const CardComponent: React.FC<CardProps> = ({ title, interestRate, imageUrl, red
 
   return (
     <div className="max-w-lg w-full rounded-lg overflow-hidden shadow-lg bg-white mb-6 flex flex-col"> {/* Adjusted width */}
-      <Image src={imageUrl} alt={title} className="w-full h-48 object-cover" width={screen.width} height={48} /> {/* Increased height */}
+      <Image src={imageUrl} alt={title} className="w-full h-48 object-cover" width={100} height={48} /> {/* Increased height */}
       <div className="p-4 flex-grow">
         <h2 className="text-lg font-semibold mb-2">{title}</h2>
         <p className="text-gray-600">Interest rate: {interestRate}%</p>

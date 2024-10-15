@@ -20,7 +20,7 @@ import {
 const config = getDefaultConfig({
   appName: 'mellow.fi',
   projectId: '3775628f164e8d55622758de458ada3c',
-  chains: [base, baseSepolia],
+  chains: [baseSepolia],
   ssr: true, // If your dApp uses server side rendering (SSR)
 });
 
