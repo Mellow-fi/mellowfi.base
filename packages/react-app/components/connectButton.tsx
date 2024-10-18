@@ -42,6 +42,7 @@ export const YourApp = () => {
                 opacity: 0,
                 pointerEvents: 'none',
                 userSelect: 'none',
+                backgroundColor: '#FFD700',
               },
             })}
           >
