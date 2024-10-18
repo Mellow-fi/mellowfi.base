@@ -15,7 +15,10 @@ interface LoanData {
 }
 
 const LoanDashboard: React.FC = () => {
-  const { isError, isPending ,writeContract, error } = useWriteContract();  const [desiredLoanAmount, setDesiredLoanAmount] = useState('');
+  const { requestLoan
+   } = useWeb3();
+  const { isError, isPending ,writeContract, error } = useWriteContract();  
+  const [desiredLoanAmount, setDesiredLoanAmount] = useState('');
   const address = useAccount().address;
 
   const { data: collinUSD } = useReadContract({
@@ -39,9 +42,24 @@ const LoanDashboard: React.FC = () => {
   const handleBorrowLoan = async (amount:number) => {
 
     // Logic to borrow the loan
-    await requestLoan(desiredLoanAmount,writeContract);
-    console.log(`Borrowing loan amount:${desiredLoanAmount}`);
+    try {
+      const loanAmountInWei = amount * 1e6;
+      await requestLoan(loanAmountInWei.toString(), writeContract);
+      if (!isError) console.log("Loan requested: ", loanAmountInWei);
+    } catch (error) {
+      console.error(error);
+    }
   };
+
+  // const handleDepositCeloCollateral = async (amount: number) => {
+  //   try {
+  //     await depositNativeCollateral(amount.toString(), writeContract);
+      
+  //     console.log("Native collateral deposited: ", amount);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   const handleRepayLoan = async () => {
     // Logic to repay the loan
@@ -57,7 +75,7 @@ const LoanDashboard: React.FC = () => {
 
   const handleLoanSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    handleBorrowLoan();
+    handleBorrowLoan(Number(desiredLoanAmount));
   };
 
   return (

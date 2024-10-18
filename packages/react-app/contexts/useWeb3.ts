@@ -113,14 +113,23 @@ export const useWeb3 = () => {
   
 
   const requestLoan = async (amount: string, func: WriteContractMutate<Config,unknown>) => {
-    const amountInWei = parseUnits(amount, 18);
+    const amountInWei = parseUnits(amount, 6);
 
     try{
+
+      writeContract({
+        abi: StableTokenABI.abi,
+        address: USDC_CONTRACT_ADDRESS,
+        functionName: "approve",
+        args: [COLLATERAL_MANAGER_CONTRACT, amountInWei],
+      });
+
+      
       const tx = writeContract({
         abi: LoanManagerABI.abi,
         address: LOAN_MANAGER_CONTRACT,
         functionName: "requestLoan",
-        args:[amount,"5"]
+        args:["1000000","5"]
       });
     } catch (e) {
       console.log(e);
