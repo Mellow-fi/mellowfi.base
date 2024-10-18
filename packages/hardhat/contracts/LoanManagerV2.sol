@@ -161,6 +161,7 @@ contract MellowFinanceLoanManager is ReentrancyGuard, Ownable, Pausable {
         updateUserCreditScore(msg.sender, true);
 
         collateralManager.releaseFunds(msg.sender);
+        delete userLoans[msg.sender];
         emit LoanRepaid(msg.sender, loan.amount, loan.collateral);
     }
 
