@@ -12,7 +12,7 @@ export const useWeb3 = () => {
   const { address } = useAccount();
   const COLLATERAL_MANAGER_CONTRACT = "0x0c211c2A104eb0415b33F453f2699265760A5A51";
   const USDC_CONTRACT_ADDRESS = "0x036CbD53842c5426634e7929541eC2318f3dCF7e";
-  const LOAN_MANAGER_CONTRACT = "0x93a731F8533B08a9C64a06507B29D1718996E95b";
+  const LOAN_MANAGER_CONTRACT = "0x20B3fd5CBd88d4747730DaAFf0872422a4Dbcfc7";
 
   const {writeContract} = useWriteContract();
 
@@ -112,9 +112,28 @@ export const useWeb3 = () => {
 
   
 
-  const requestLoan = async (amount: string) => {
-    const amountInWei = parseUnits(amount, 18);
-    return await executeTransaction({ contractAddress: LOAN_MANAGER_CONTRACT, abi: LoanManagerABI.abi, method: "requestLoan", args: [amountInWei] });
+  const requestLoan = async (amount: string, func: WriteContractMutate<Config,unknown>) => {
+    const amountInWei = parseUnits(amount, 6);
+
+    try{
+
+      writeContract({
+        abi: StableTokenABI.abi,
+        address: USDC_CONTRACT_ADDRESS,
+        functionName: "approve",
+        args: [COLLATERAL_MANAGER_CONTRACT, amountInWei],
+      });
+
+
+      const tx = writeContract({
+        abi: LoanManagerABI.abi,
+        address: LOAN_MANAGER_CONTRACT,
+        functionName: "requestLoan",
+        args:["1000000","5"]
+      });
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   const repayLoan = async (amount: string) => {

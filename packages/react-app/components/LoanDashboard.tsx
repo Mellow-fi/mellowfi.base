@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useWeb3 } from '@/contexts/useWeb3';  
 import Navbar from './NavBar';
 import Footer from './Footer';
 import { useRouter } from 'next/router'; 
-import { useReadContract, useAccount } from 'wagmi';
+import { useReadContract, useAccount,useWriteContract } from 'wagmi';
 import LoanManagerABI from '../contexts/MellowFinanceLoanManager.json';
+import { writeContract } from 'viem/actions';
 
 interface LoanData {
   loanAmount: number;
@@ -14,42 +15,67 @@ interface LoanData {
 }
 
 const LoanDashboard: React.FC = () => {
-
-  // const {readContract} = useReadContract();
+  const { requestLoan
+   } = useWeb3();
+  const { isError, isPending ,writeContract, error } = useWriteContract();  
+  const [desiredLoanAmount, setDesiredLoanAmount] = useState('');
   const address = useAccount().address;
-  
 
-  const {data: collinUSD} = useReadContract({
+  const { data: collinUSD } = useReadContract({
     abi: LoanManagerABI.abi,
-    address: '0x23386834A7D36FC173A16B8dc8dA92c648AA340f',
+    address: '0x20B3fd5CBd88d4747730DaAFf0872422a4Dbcfc7',
     functionName: 'getCollinUSD',
-    args:[address]
-  })
+    args: [address],
+  });
 
   console.log(collinUSD);
-  const availableloan = (Number(collinUSD)* 150/100).toString();
+  const availableloan = (Number(collinUSD) * 150 / 100).toString();
   const availableloanFloat = parseFloat(availableloan);
-  const formattedavailableloanFloat = (availableloanFloat / 1e18).toFixed(2)
+  const formattedavailableloanFloat = (availableloanFloat / 1e18).toFixed(2);
   const mxLoanStr = Number(collinUSD).toString();
   const mxLoanFloat = parseFloat(mxLoanStr);
-  const formattedLoanAmount = (mxLoanFloat / 1e18).toFixed(2); // Adjust precision as needed
+  const formattedLoanAmount = (mxLoanFloat / 1e18).toFixed(2); 
 
   console.log(formattedLoanAmount);
   const router = useRouter(); 
-  const getLoanBalance = async () => {
+
+  const handleBorrowLoan = async (amount:number) => {
+
+    // Logic to borrow the loan
+    try {
+      const loanAmountInWei = amount * 1e6;
+      await requestLoan(loanAmountInWei.toString(), writeContract);
+      if (!isError) console.log("Loan requested: ", loanAmountInWei);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  getLoanBalance();
-
-  const handleBorrowLoan = async () => {
-    
-  };
+  // const handleDepositCeloCollateral = async (amount: number) => {
+  //   try {
+  //     await depositNativeCollateral(amount.toString(), writeContract);
+      
+  //     console.log("Native collateral deposited: ", amount);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   const handleRepayLoan = async () => {
+    // Logic to repay the loan
   };
 
   const handleBack = () => {
     router.back();
+  };
+
+  const handleLoanAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDesiredLoanAmount(event.target.value);
+  };
+
+  const handleLoanSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    handleBorrowLoan(Number(desiredLoanAmount));
   };
 
   return (
@@ -66,22 +92,24 @@ const LoanDashboard: React.FC = () => {
               <div className="space-y-3 text-gray-700 text-sm">
                 <p><strong>Available Loan Amount:</strong> ${formattedavailableloanFloat}</p>
                 <p><strong>Collateral Amount:</strong> ${formattedLoanAmount}</p>
-                <p><strong>Loan-to-Value (LTV) Ratio:</strong> ${}</p>
-                {/* <p><strong>Collateralization Status:</strong>
-                  {loanData?.isSufficientlyCollateralized ? ( // how does this know?
-                    <span className="text-green-600 font-bold"> Sufficient</span>
-                  ) : (
-                    <span className="text-red-600 font-bold"> Insufficient</span>
-                  )}
-                </p> */}
-              </div>
-              <div className="mt-4">
-                <button
-                  onClick={handleBorrowLoan}
-                  className="w-50 bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded-md shadow focus:outline-none focus:ring-2 focus:ring-orange-300 text-sm"
-                >
-                  Borrow Loan
-                </button>
+                <form onSubmit={handleLoanSubmit} className="mt-4">
+                  <label className="block mb-2 text-sm font-medium text-gray-700">
+                    Desired Loan Amount:
+                  </label>
+                  <input
+                    type="number"
+                    value={desiredLoanAmount}
+                    onChange={handleLoanAmountChange}
+                    placeholder="Enter amount"
+                    className="w-full p-2 border rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-yellow-300"
+                  />
+                  <button
+                    type="submit"
+                    className="w-full mt-4 bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded-md shadow focus:outline-none focus:ring-2 focus:ring-orange-300 text-sm"
+                  >
+                    Borrow Loan
+                  </button>
+                </form>
               </div>
             </div>
 
@@ -110,12 +138,12 @@ const LoanDashboard: React.FC = () => {
 // Sidebar Component
 const Sidebar: React.FC<{ handleBack: () => void }> = ({ handleBack }) => {
   return (
-    <div className="w-64  bg-gray-600 text-white p-6 space-y-6 h-screen ">
+    <div className="w-64 bg-gray-600 text-white p-6 space-y-6 h-screen ">
       <h2 className="text-xl font-bold">Navigation</h2>
       <nav className="space-y-4">
         <button
           onClick={handleBack}
-          className="block w-full text-left bg-yellow-700 hover:bg-yellow-600 text-white font-bold py-2 px-4 mt-60 rounded-md shadow focus:outline-none focus:ring-2 focus:ring-yellow-300  focus:ring-gray-300 text-sm"
+          className="block w-full text-left bg-yellow-700 hover:bg-yellow-600 text-white font-bold py-2 px-4 mt-60 rounded-md shadow focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:ring-gray-300 text-sm"
         >
           Back to Pool List
         </button>
