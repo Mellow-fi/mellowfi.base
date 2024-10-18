@@ -23,7 +23,7 @@ const LoanDashboard: React.FC = () => {
 
   const { data: collinUSD } = useReadContract({
     abi: LoanManagerABI.abi,
-    address: '0x23386834A7D36FC173A16B8dc8dA92c648AA340f',
+    address: '0x20B3fd5CBd88d4747730DaAFf0872422a4Dbcfc7',
     functionName: 'getCollinUSD',
     args: [address],
   });
