@@ -112,9 +112,19 @@ export const useWeb3 = () => {
 
   
 
-  const requestLoan = async (amount: string) => {
+  const requestLoan = async (amount: string, func: WriteContractMutate<Config,unknown>) => {
     const amountInWei = parseUnits(amount, 18);
-    return await executeTransaction({ contractAddress: LOAN_MANAGER_CONTRACT, abi: LoanManagerABI.abi, method: "requestLoan", args: [amountInWei] });
+
+    try{
+      const tx = writeContract({
+        abi: LoanManagerABI.abi,
+        address: LOAN_MANAGER_CONTRACT,
+        functionName: "requestLoan",
+        args:[amount,"5"]
+      });
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   const repayLoan = async (amount: string) => {
