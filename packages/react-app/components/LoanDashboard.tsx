@@ -15,9 +15,9 @@ interface LoanData {
 }
 
 const LoanDashboard: React.FC = () => {
-  const { requestLoan, repayLoan
+  const { requestLoan, repayLoan, repayFullLoan
    } = useWeb3();
-  const { isError, isPending ,writeContract, error } = useWriteContract();  
+  const { isError, isPending ,writeContract, error, isSuccess } = useWriteContract();  
   const [desiredLoanAmount, setDesiredLoanAmount] = useState('');
   const address = useAccount().address;
 
@@ -37,8 +37,7 @@ const LoanDashboard: React.FC = () => {
 
 
 
-  console.log(collinUSD);
-  console.log(loanWithInterest);
+
 
 
   const availableloan = (Number(collinUSD) * 100 / 150).toString();
@@ -72,6 +71,23 @@ const LoanDashboard: React.FC = () => {
       const amount = formattedLoanwithInterestAmount;
       await repayLoan(amount.toString());
       if (!isError) console.log("Loan repaid: ", amount);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleRepayFullLoan = async () => {
+    // Logic to repay the loan
+    try {
+      const amount = Number(loanWithInterest);
+      console.log(`You need to pay: ${amount}`);
+      await repayFullLoan(amount.toString());
+      // if (!isError) console.log("Loan repaid: ", amount);
+      // if(isSuccess) {
+      //   console.log("Loan repaid successfully");
+      // } else {
+      //   console.log("Loan not repaid");
+      // }
     } catch (error) {
       console.error(error);
     }
@@ -132,7 +148,7 @@ const LoanDashboard: React.FC = () => {
               </p>
               <div className="mt-4">
                 <button
-                  onClick={handleRepayLoan}
+                  onClick={handleRepayFullLoan}
                   className="w-50 bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded-md shadow focus:outline-none focus:ring-2 focus:ring-green-300 text-sm"
                 >
                   Repay Loan

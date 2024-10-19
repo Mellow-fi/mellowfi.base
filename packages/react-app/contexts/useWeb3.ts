@@ -114,6 +114,30 @@ export const useWeb3 = () => {
     }
   }
 
+  const repayFullLoan = async (amount: string) => {
+    const amountInWei = parseUnits(amount, 6);
+    
+    try{
+
+      writeContract({
+        abi: StableTokenABI.abi,
+        address: USDC_CONTRACT_ADDRESS,
+        functionName: "approve",
+        args: [LOAN_MANAGER_CONTRACT, (Number(amountInWei)/1e6)],
+      });
+
+
+      const tx = writeContract({
+        abi: LoanManagerABI.abi,
+        address: LOAN_MANAGER_CONTRACT,
+        functionName: "repayLoan",
+        args:[amount]
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
 
   return {
     address,
@@ -121,5 +145,6 @@ export const useWeb3 = () => {
     depositStableCollateral,
     requestLoan,
     repayLoan,
+    repayFullLoan,
   };
 };
