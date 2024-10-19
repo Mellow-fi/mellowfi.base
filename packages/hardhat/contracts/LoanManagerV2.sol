@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
@@ -87,16 +87,6 @@ contract MellowFinanceLoanManager is ReentrancyGuard, Ownable, Pausable {
         return price;
     }
 
-    // function getCollinUSD() public view returns (uint256) {
-    // (uint256 userColNative, uint256 userColStable) = collateralManager.getCollateralBalance(msg.sender);
-    // uint256 nativePriceInUSD = uint256(getNativePrice());
-    // uint256 stablePriceInUSD = uint256(getStablePrice());
-
-    // uint256 nativeCollateralInUSD = (userColNative * nativePriceInUSD);
-    // uint256 stableCollateralInUSD = (userColStable * stablePriceInUSD);
-    // uint256 userTotalColinUSD = nativeCollateralInUSD + stableCollateralInUSD;
-    // return (userTotalColinUSD);
-    // }
 
     function getCollinUSD(address _user) public view returns (uint256) {
         (uint256 userColNative, uint256 userColStable) = collateralManager.getCollateralBalance(_user);
@@ -112,7 +102,7 @@ contract MellowFinanceLoanManager is ReentrancyGuard, Ownable, Pausable {
 
 
     // Request a loan based on the user's collateral
-    function requestLoan(uint256 _loanAmount, uint256 _desiredInterestRate) external nonReentrant whenNotPaused {
+    function requestLoan(uint256 _loanAmount) external nonReentrant whenNotPaused {
         require(_loanAmount > 0, "LoanManager: Loan amount must be greater than 0");
         require(userLoans[msg.sender].amount == 0, "LoanManager: Existing loan must be repaid first");
 
@@ -127,7 +117,7 @@ contract MellowFinanceLoanManager is ReentrancyGuard, Ownable, Pausable {
         // Store loan information
         Loan memory newLoan = Loan({
             amount: _loanAmount,
-            interestRate: _desiredInterestRate > baseInterestRate ? _desiredInterestRate : baseInterestRate,
+            interestRate: 5,
             startTime: block.timestamp,
             collateral: userTotalColinUSD,
             collateralRatio: collateralRatio,
@@ -232,7 +222,8 @@ contract MellowFinanceLoanManager is ReentrancyGuard, Ownable, Pausable {
 
     // make sure the fund pool is emptied before upgrading contracts
     function returnFunds() public onlyOwner {
-        cUSDToken.transfer(owner(), cUSDToken.balanceOf(address(this)));
         fundPool = 0;
+        cUSDToken.transfer(owner(), cUSDToken.balanceOf(address(this)));
+        
     }
 }
