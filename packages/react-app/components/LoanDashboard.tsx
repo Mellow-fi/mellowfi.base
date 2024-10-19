@@ -15,7 +15,7 @@ interface LoanData {
 }
 
 const LoanDashboard: React.FC = () => {
-  const { requestLoan
+  const { requestLoan, repayLoan
    } = useWeb3();
   const { isError, isPending ,writeContract, error } = useWriteContract();  
   const [desiredLoanAmount, setDesiredLoanAmount] = useState('');
@@ -23,18 +23,31 @@ const LoanDashboard: React.FC = () => {
 
   const { data: collinUSD } = useReadContract({
     abi: LoanManagerABI.abi,
-    address: '0x20B3fd5CBd88d4747730DaAFf0872422a4Dbcfc7',
+    address: '0xe538ab95d17B7875072D9a6ecC64419484Ec5Ae4',
     functionName: 'getCollinUSD',
     args: [address],
   });
 
+  const { data: loanWithInterest } = useReadContract({
+    abi: LoanManagerABI.abi,
+    address: '0xe538ab95d17B7875072D9a6ecC64419484Ec5Ae4',
+    functionName: 'calculateLoanWithInterest',
+    args: [address],
+  });
+
+
+
   console.log(collinUSD);
-  const availableloan = (Number(collinUSD) * 150 / 100).toString();
+  console.log(loanWithInterest);
+
+
+  const availableloan = (Number(collinUSD) * 100 / 150).toString();
   const availableloanFloat = parseFloat(availableloan);
   const formattedavailableloanFloat = (availableloanFloat / 1e18).toFixed(2);
   const mxLoanStr = Number(collinUSD).toString();
   const mxLoanFloat = parseFloat(mxLoanStr);
   const formattedLoanAmount = (mxLoanFloat / 1e18).toFixed(2); 
+  const formattedLoanwithInterestAmount = (Number(loanWithInterest)/1e6).toFixed(2);
 
   console.log(formattedLoanAmount);
   const router = useRouter(); 
@@ -43,26 +56,25 @@ const LoanDashboard: React.FC = () => {
 
     // Logic to borrow the loan
     try {
-      const loanAmountInWei = amount * 1e6;
-      await requestLoan(loanAmountInWei.toString(), writeContract);
-      if (!isError) console.log("Loan requested: ", loanAmountInWei);
+      const loanAmountInWei = desiredLoanAmount;
+      await requestLoan(amount.toString(), writeContract);
+      if (!isError) console.log("Loan requested: ", amount);
     } catch (error) {
       console.error(error);
     }
   };
 
-  // const handleDepositCeloCollateral = async (amount: number) => {
-  //   try {
-  //     await depositNativeCollateral(amount.toString(), writeContract);
-      
-  //     console.log("Native collateral deposited: ", amount);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
+
 
   const handleRepayLoan = async () => {
     // Logic to repay the loan
+    try {
+      const amount = formattedLoanwithInterestAmount;
+      await repayLoan(amount.toString());
+      if (!isError) console.log("Loan repaid: ", amount);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleBack = () => {
@@ -116,7 +128,7 @@ const LoanDashboard: React.FC = () => {
             <div className="bg-gray-100 p-4 rounded-lg shadow-lg">
               <h3 className="text-2xl font-bold mb-4">Repay Loan</h3>
               <p className="text-gray-700 text-sm">
-                <strong>Loan Taken:</strong> ${}
+                <strong>Loan Taken:</strong> ${formattedLoanwithInterestAmount}
               </p>
               <div className="mt-4">
                 <button
