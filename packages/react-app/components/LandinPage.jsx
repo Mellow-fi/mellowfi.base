@@ -28,7 +28,7 @@ const LandingPage = () => {
                     <div className="md:w-1/2 flex justify-center mt-2"> {/* Reduced margin-top here */}
                         <div className="relative">
                             <Image
-                                src="/../static/mellow.png"
+                                src="/static/mellow.png"
                                 alt="Phone displaying Mellow Finance"
                                 className="max-w-xs md:max-w-[1200px] w-[500px]"
                                 width={300}
