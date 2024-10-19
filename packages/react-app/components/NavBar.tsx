@@ -1,10 +1,12 @@
 import React from 'react';
 import { useRouter } from 'next/router'; 
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import {  BlueCreateWalletButton } from './BlueCreateWalletButton'; // Import the button
+import { BlueCreateWalletButton } from './BlueCreateWalletButton'; // Import the button
+import { useAccount } from 'wagmi'; // Import useAccount hook from wagmi
 
 const Navbar: React.FC = () => {
   const router = useRouter();
+  const { isConnected } = useAccount(); // Destructure isConnected to check wallet status
 
   const navigateTo = (path: string) => {
     router.push(path);
@@ -26,13 +28,15 @@ const Navbar: React.FC = () => {
         <div className="text-2xl font-bold cursor-pointer" onClick={() => navigateTo('/')}>
           Mellow Finance
         </div>
+
+        {/* Wallet Connect Button */}
         <ConnectButton />
 
-        {/* Create Wallet Button */}
-        < BlueCreateWalletButton  />
+        {/* Conditionally render the Create Wallet Button if not connected */}
+        {!isConnected && <BlueCreateWalletButton />}
       </div>
     </nav>
   );
 };
 
-export default Navbar; 
+export default Navbar;
