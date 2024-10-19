@@ -24,7 +24,7 @@ const CardComponent: React.FC<CardProps> = ({ title, interestRate, imageUrl, red
   
   const handleDepositCeloCollateral = async (amount: number) => {
     try {
-      await depositNativeCollateral(amount.toString(), writeContract);
+      await depositNativeCollateral(amount.toString());
       
       console.log("Native collateral deposited: ", amount);
     } catch (error) {
@@ -34,7 +34,7 @@ const CardComponent: React.FC<CardProps> = ({ title, interestRate, imageUrl, red
 
   const handleDepositNativeCollateral = async (amount: number) => {
     try {
-      await depositStableCollateral(amount.toString(), writeContract);
+      await depositStableCollateral(amount.toString());
 
       // console.log(isError)
       // console.log(isPending)

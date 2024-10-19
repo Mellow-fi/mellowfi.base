@@ -17,7 +17,7 @@ export const useWeb3 = () => {
 
   
 
-  const depositNativeCollateral = async (amount: string, func: WriteContractMutate<Config,unknown>) => {
+  const depositNativeCollateral = async (amount: string) => {
     const amountInWei = parseUnits(amount, 18);
 
     try{
@@ -32,7 +32,7 @@ export const useWeb3 = () => {
     }
   };
 
-  const depositStableCollateral = async (amount: string, func: WriteContractMutate<Config,unknown>) => {
+  const depositStableCollateral = async (amount: string) => {
     const amountInWei = parseUnits(amount, 6);
 
     try{
@@ -65,7 +65,7 @@ export const useWeb3 = () => {
 
   
 
-  const requestLoan = async (amount: string, func: WriteContractMutate<Config,unknown>) => {
+  const requestLoan = async (amount: string) => {
     const amountInWei = parseUnits(amount, 6);
 
     try{

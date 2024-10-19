@@ -5,14 +5,8 @@ import Footer from './Footer';
 import { useRouter } from 'next/router'; 
 import { useReadContract, useAccount,useWriteContract } from 'wagmi';
 import LoanManagerABI from '../contexts/MellowFinanceLoanManager.json';
-import { writeContract } from 'viem/actions';
 
-interface LoanData {
-  loanAmount: number;
-  collateralAmount: number;
-  loanToValueRatio: number;
-  isSufficientlyCollateralized: boolean;
-}
+
 
 const LoanDashboard: React.FC = () => {
   const { requestLoan, repayLoan, repayFullLoan
@@ -35,11 +29,6 @@ const LoanDashboard: React.FC = () => {
     args: [address],
   });
 
-
-
-
-
-
   const availableloan = (Number(collinUSD) * 100 / 150).toString();
   const availableloanFloat = parseFloat(availableloan);
   const formattedavailableloanFloat = (availableloanFloat / 1e18).toFixed(2);
@@ -47,16 +36,14 @@ const LoanDashboard: React.FC = () => {
   const mxLoanFloat = parseFloat(mxLoanStr);
   const formattedLoanAmount = (mxLoanFloat / 1e18).toFixed(2); 
   const formattedLoanwithInterestAmount = (Number(loanWithInterest)/1e6).toFixed(2);
-
-  console.log(formattedLoanAmount);
+  const totalAvailableLoan = (Number(formattedavailableloanFloat)-Number(formattedLoanwithInterestAmount)).toFixed(2);
   const router = useRouter(); 
 
   const handleBorrowLoan = async (amount:number) => {
 
     // Logic to borrow the loan
     try {
-      const loanAmountInWei = desiredLoanAmount;
-      await requestLoan(amount.toString(), writeContract);
+      await requestLoan(amount.toString());
       if (!isError) console.log("Loan requested: ", amount);
     } catch (error) {
       console.error(error);
@@ -118,7 +105,7 @@ const LoanDashboard: React.FC = () => {
             <div className="bg-white p-4 rounded-lg shadow-lg">
               <h3 className="text-2xl font-bold mb-4">Your Loan</h3>
               <div className="space-y-3 text-gray-700 text-sm">
-                <p><strong>Available Loan Amount:</strong> ${formattedavailableloanFloat}</p>
+                <p><strong>Available Loan Amount:</strong> ${totalAvailableLoan}</p>
                 <p><strong>Collateral Amount:</strong> ${formattedLoanAmount}</p>
                 <form onSubmit={handleLoanSubmit} className="mt-4">
                   <label className="block mb-2 text-sm font-medium text-gray-700">
