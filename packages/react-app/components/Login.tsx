@@ -32,12 +32,12 @@ const Login: React.FC = () => {
             {/* Title with Yarn Image */}
       <div className="text-4xl font-san-serif font-semibold mb-8 text-white flex items-center space-x-1">
         <span>Mellow  M</span>
-        <Image src="/../static/wool.png" alt="yarn" className="inline-block w-10 h-10" width={10} height={10} />
+        <Image src="/static/wool.png" alt="yarn" className="inline-block w-10 h-10" width={10} height={10} />
         <span>ney Magic</span>
       </div>
 
         <div>
-          <Image src="/../static/login-image.png.png" alt="Cat Image" width={400} height={400}/>
+          <Image src="/static/login-image.png.png" alt="Cat Image" width={400} height={400}/>
         </div>
 
         {/* <div>
