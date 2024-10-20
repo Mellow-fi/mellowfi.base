@@ -3,7 +3,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-black text-white py-8 mt-12 shadow-2xl shadow-gray-900/20">
+    <footer className="bg-zinc-800 text-white py-8 mt-12 shadow-2xl shadow-gray-900/20">
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Left Section: Navigation */}
         <div>

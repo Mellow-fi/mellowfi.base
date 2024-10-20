@@ -10,8 +10,8 @@ const LandingPage = () => {
     };
 
     return (
-        <div className="bg-black">
-            <div className="min-h-screen bg-black flex flex-col justify-center items-center">
+        <div className="bg-zinc-800">
+            <div className="min-h-screen bg-zinc-800 flex flex-col justify-center items-center">
                 <div className="container mx-auto flex flex-col md:flex-row items-center">
                     {/* Left Section */}
                     <div className="md:w-1/2 text-center md:text-left">
@@ -39,11 +39,11 @@ const LandingPage = () => {
                 </div>
 
                 {/* Photo Section */}
-                <div className="py-12 bg-white w-full">
+                <div className="py-12 bg-zinc-800 w-full">
                     <div className="container mx-auto flex flex-col items-center justify-center gap-8">
                         <div className="w-full">
                             <Image
-                                src="/static/1.png" // Replace with your image path
+                                src="/static/first.png" // Replace with your image path
                                 alt="Photo 1"
                                 className="w-full h-auto rounded-lg shadow-md"
                                 width={1200}
@@ -52,7 +52,7 @@ const LandingPage = () => {
                         </div>
                         <div className="w-full mt-8">
                             <Image
-                                src="/static/2.png" // Replace with your image path
+                                src="/static/second.png" // Replace with your image path
                                 alt="Photo 2"
                                 className="w-full h-auto rounded-lg shadow-md"
                                 width={1200}
