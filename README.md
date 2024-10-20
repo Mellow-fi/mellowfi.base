@@ -22,3 +22,7 @@ Click 'Sign up'
 Click the 'Create' button on the pop up. This creates a passkey to sign in to keys.coinbase.com
 Create a recovery pin. This helps you access your saved passkeys on any device.
 Up to this point, you have successfully connected your Coinbase wallet on Mellow Finance--Congratulations!
+
+# Smart Contract Addresses
+- [Loan Manager Contract](https://sepolia.basescan.org/address/0xe538ab95d17B7875072D9a6ecC64419484Ec5Ae4) - Loan Manager Contract
+- [Collateral Manager Contract](https://sepolia.basescan.org/address/0x58E965DCc634f375cD01e695eBe73F1b217ee48c) - Collateral Manager Contract
