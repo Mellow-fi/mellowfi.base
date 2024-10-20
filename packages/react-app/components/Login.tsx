@@ -26,9 +26,9 @@ const Login: React.FC = () => {
   
 
   return (
-    <div className="bg-black">
+    <div className="bg-zinc-800">
       <Navbar />
-      <div className="min-h-screen bg-black flex flex-col justify-center items-center">
+      <div className="min-h-screen bg-zinc-800 flex flex-col justify-center items-center">
             {/* Title with Yarn Image */}
       <div className="text-4xl font-san-serif font-semibold mb-8 text-white flex items-center space-x-1">
         <span>Mellow  M</span>

@@ -9,12 +9,12 @@ const PoolList: React.FC = () => {
 
   const pools = [
     {
-      title: 'BASE/cKES Pool',
+      title: 'BASE/USDC Pool',
       interestRate: 8,
       imageUrl: '/static/cardImage.png',
     },
     {
-      title: 'USDT/cKES Pool',
+      title: 'USDT/usdc Pool',
       interestRate: 8,
       imageUrl: '/static/secondCardImage.png',
     },

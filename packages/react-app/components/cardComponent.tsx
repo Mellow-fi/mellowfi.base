@@ -61,7 +61,7 @@ const CardComponent: React.FC<CardProps> = ({ title, interestRate, imageUrl, red
             className="bg-blue-500 text-white py-2 px-4 rounded"
             onClick={handleBorrowClick} 
           >
-            Borrow
+            Deposit
           </button>
           <button
             className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 py-2 px-4 rounded"
