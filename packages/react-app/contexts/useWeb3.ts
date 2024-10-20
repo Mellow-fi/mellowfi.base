@@ -123,7 +123,7 @@ export const useWeb3 = () => {
         abi: StableTokenABI.abi,
         address: USDC_CONTRACT_ADDRESS,
         functionName: "approve",
-        args: [LOAN_MANAGER_CONTRACT, (Number(amountInWei)/1e6)],
+        args: [LOAN_MANAGER_CONTRACT, ((Number(amountInWei)/1e6)+10)],
       });
 
 

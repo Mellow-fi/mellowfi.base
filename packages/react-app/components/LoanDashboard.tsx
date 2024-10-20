@@ -5,6 +5,7 @@ import Footer from './Footer';
 import { useRouter } from 'next/router'; 
 import { useReadContract, useAccount, useWriteContract } from 'wagmi';
 import LoanManagerABI from '../contexts/MellowFinanceLoanManager.json';
+import { updatePassword } from 'firebase/auth';
 
 const LOAN_MANAGER_ADDRESS = '0xe538ab95d17B7875072D9a6ecC64419484Ec5Ae4';
 
@@ -58,13 +59,19 @@ const LoanDashboard: React.FC = () => {
   };
 
   const handleRepayFullLoan = async () => {
-    
+    // Logic to repay the loan
     const amount = Number(loanWithInterest);
     const updatedAmount = amount + 10;
     try {
-      console.log(`full amount: ${amount}`);
-      console.log(`updated amount: `)
+      console.log(`You need to pay: ${amount}`);
+      console.log(`You will pay: ${updatedAmount} `)
       await repayFullLoan(updatedAmount.toString());
+      // if (!isError) console.log("Loan repaid: ", amount);
+      // if(isSuccess) {
+      //   console.log("Loan repaid successfully");
+      // } else {
+      //   console.log("Loan not repaid");
+      // }
     } catch (error) {
       console.error(error);
     }
