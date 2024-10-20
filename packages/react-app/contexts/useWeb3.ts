@@ -114,18 +114,20 @@ export const useWeb3 = () => {
     }
   }
 
-  const repayFullLoan = async (amount: string) => {
+  const ApproveContract = async(amount : string) => {
     const amountInWei = parseUnits(amount, 6);
+    const approvalAmount = (Number(amountInWei)/1e6)
     
+    const tx = writeContract({
+      abi: StableTokenABI.abi,
+      address: USDC_CONTRACT_ADDRESS,
+      functionName: "approve",
+      args: [LOAN_MANAGER_CONTRACT, approvalAmount],
+    });
+  }
+
+  const repayFullLoan = async (amount: string) => {
     try{
-
-      writeContract({
-        abi: StableTokenABI.abi,
-        address: USDC_CONTRACT_ADDRESS,
-        functionName: "approve",
-        args: [LOAN_MANAGER_CONTRACT, ((Number(amountInWei)/1e6)+10)],
-      });
-
 
       const tx = writeContract({
         abi: LoanManagerABI.abi,
@@ -146,5 +148,6 @@ export const useWeb3 = () => {
     requestLoan,
     repayLoan,
     repayFullLoan,
+    ApproveContract,
   };
 };

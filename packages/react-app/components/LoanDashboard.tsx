@@ -10,7 +10,7 @@ import { updatePassword } from 'firebase/auth';
 const LOAN_MANAGER_ADDRESS = '0xe538ab95d17B7875072D9a6ecC64419484Ec5Ae4';
 
 const LoanDashboard: React.FC = () => {
-  const { requestLoan, repayLoan, repayFullLoan } = useWeb3();
+  const { requestLoan, repayLoan, repayFullLoan, ApproveContract } = useWeb3();
   const { isError, isPending, writeContract, error, isSuccess } = useWriteContract();  
   const [desiredLoanAmount, setDesiredLoanAmount] = useState('');
   const address = useAccount().address;
@@ -65,6 +65,7 @@ const LoanDashboard: React.FC = () => {
     try {
       console.log(`You need to pay: ${amount}`);
       console.log(`You will pay: ${updatedAmount} `)
+      await ApproveContract(updatedAmount.toString());
       await repayFullLoan(updatedAmount.toString());
       // if (!isError) console.log("Loan repaid: ", amount);
       // if(isSuccess) {
