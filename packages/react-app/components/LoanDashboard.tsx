@@ -6,6 +6,8 @@ import { useRouter } from 'next/router';
 import { useReadContract, useAccount, useWriteContract } from 'wagmi';
 import LoanManagerABI from '../contexts/MellowFinanceLoanManager.json';
 
+const LOAN_MANAGER_ADDRESS = '0xe538ab95d17B7875072D9a6ecC64419484Ec5Ae4';
+
 const LoanDashboard: React.FC = () => {
   const { requestLoan, repayLoan, repayFullLoan } = useWeb3();
   const { isError, isPending, writeContract, error, isSuccess } = useWriteContract();  
@@ -15,14 +17,14 @@ const LoanDashboard: React.FC = () => {
 
   const { data: collinUSD } = useReadContract({
     abi: LoanManagerABI.abi,
-    address: '0xe538ab95d17B7875072D9a6ecC64419484Ec5Ae4',
+    address: LOAN_MANAGER_ADDRESS,
     functionName: 'getCollinUSD',
     args: [address],
   });
 
   const { data: loanWithInterest } = useReadContract({
     abi: LoanManagerABI.abi,
-    address: '0xe538ab95d17B7875072D9a6ecC64419484Ec5Ae4',
+    address: LOAN_MANAGER_ADDRESS,
     functionName: 'calculateLoanWithInterest',
     args: [address],
   });
@@ -56,10 +58,13 @@ const LoanDashboard: React.FC = () => {
   };
 
   const handleRepayFullLoan = async () => {
+    
+    const amount = Number(loanWithInterest);
+    const updatedAmount = amount + 10;
     try {
-      const amount = Number(loanWithInterest);
-      console.log(`You need to pay: ${amount}`);
-      await repayFullLoan(amount.toString());
+      console.log(`full amount: ${amount}`);
+      console.log(`updated amount: `)
+      await repayFullLoan(updatedAmount.toString());
     } catch (error) {
       console.error(error);
     }

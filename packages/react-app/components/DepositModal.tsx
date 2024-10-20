@@ -13,10 +13,10 @@ const DepositModal: React.FC<DepositModalProps> = ({ isOpen, onClose, onDepositC
 
   const handleDeposit = () => {
     // Choose the function based on the title
-    if (title === "BASE/cKES Pool") {
+    if (title === "BASE/USDC Pool") {
       onDepositCelo(amount);
-    } else if (title === "USDT/cKES Pool") {
-      onDepositStableCoin(amount);
+    } else if (title === "UERC/USDC Pool") {
+      alert("This feature is not active yet.");
     }
     onClose(); // Close the modal after deposit
   };

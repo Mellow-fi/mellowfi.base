@@ -131,7 +131,7 @@ export const useWeb3 = () => {
         abi: LoanManagerABI.abi,
         address: LOAN_MANAGER_CONTRACT,
         functionName: "repayLoan",
-        args:[amount]
+        args:[amount.toString()],
       });
     } catch (e) {
       console.log(e);
