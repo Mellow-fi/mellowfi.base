@@ -6,6 +6,16 @@ import { useRouter } from 'next/router';
 import { useReadContract, useAccount,useWriteContract } from 'wagmi';
 import LoanManagerABI from '../contexts/MellowFinanceLoanManager.json';
 
+interface Loan {
+  amount: bigint;
+  interestRate: bigint;
+  startTime: bigint;
+  collateral: bigint;
+  collateralRatio: bigint;
+  isRepaid: boolean;
+  isDefaulted: boolean;
+}
+
 
 
 const LoanDashboard: React.FC = () => {
@@ -29,6 +39,15 @@ const LoanDashboard: React.FC = () => {
     args: [address],
   });
 
+  const {data: loanInfoStruct} = useReadContract({
+    abi: LoanManagerABI.abi,
+    address: '0xe538ab95d17B7875072D9a6ecC64419484Ec5Ae4',
+    functionName: 'userLoans',
+    args: [address],
+  }) as {data: Loan | undefined};
+
+  console.log(loanInfoStruct?.interestRate);
+
   const availableloan = (Number(collinUSD) * 100 / 150).toString();
   const availableloanFloat = parseFloat(availableloan);
   const formattedavailableloanFloat = (availableloanFloat / 1e18).toFixed(2);
@@ -37,6 +56,14 @@ const LoanDashboard: React.FC = () => {
   const formattedLoanAmount = (mxLoanFloat / 1e18).toFixed(2); 
   const formattedLoanwithInterestAmount = (Number(loanWithInterest)/1e6).toFixed(2);
   const totalAvailableLoan = (Number(formattedavailableloanFloat)-Number(formattedLoanwithInterestAmount)).toFixed(2);
+  const loanAmount = loanInfoStruct?.amount ? (Number(loanInfoStruct.amount) / 1e6).toFixed(2) : '0.00';
+  const interestRate = loanInfoStruct?.interestRate?.toString()  || '0.00';
+  const collateral = loanInfoStruct?.collateral ? (Number(loanInfoStruct.collateral) / 1e6).toFixed(2) : '0.00';
+  const collateralRatio = loanInfoStruct?.collateralRatio?.toString() || 'N/A';
+  const isRepaid = loanInfoStruct?.isRepaid ? 'Yes' : 'No';
+  const isDefaulted = loanInfoStruct?.isDefaulted ? 'Yes' : 'No';
+  console.log("Loan Info: ", loanInfoStruct?.interestRate);
+  
   const router = useRouter(); 
 
   const handleBorrowLoan = async (amount:number) => {
@@ -95,7 +122,7 @@ const LoanDashboard: React.FC = () => {
 
   return (
     <div className="flex min-h-screen">
-      <Sidebar handleBack={handleBack} />
+      {/* <Sidebar handleBack={handleBack} /> */}
       <div className="flex flex-col flex-grow">
         <Navbar />
         <div className="flex-grow max-w-4xl mx-auto p-6">
@@ -127,11 +154,29 @@ const LoanDashboard: React.FC = () => {
                 </form>
               </div>
             </div>
-
+            
             <div className="bg-gray-100 p-4 rounded-lg shadow-lg">
               <h3 className="text-2xl font-bold mb-4">Repay Loan</h3>
               <p className="text-gray-700 text-sm">
                 <strong>Loan Taken:</strong> ${formattedLoanwithInterestAmount}
+              </p>
+              <div className="mt-4">
+                <button
+                  onClick={handleRepayLoan}
+                  className="w-50 bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded-md shadow focus:outline-none focus:ring-2 focus:ring-green-300 text-sm"
+                >
+                  Repay Loan
+                </button>
+              </div>
+            </div>
+
+            {/* ADDED BY KAT :)  */}
+            
+            <div className="grid bg-yellow-100 p-4 rounded-lg shadow-lg">
+              <h3 className="text-2xl font-bold mb-4">Borrowed Loan Details</h3>
+              <p className="text-gray-700 text-sm">
+                <strong>Loan Taken:</strong> ${formattedLoanwithInterestAmount}
+                <strong>Interest Rate</strong> ${interestRate}
               </p>
               <div className="mt-4">
                 <button
@@ -151,20 +196,20 @@ const LoanDashboard: React.FC = () => {
 };
 
 // Sidebar Component
-const Sidebar: React.FC<{ handleBack: () => void }> = ({ handleBack }) => {
-  return (
-    <div className="w-64 bg-gray-600 text-white p-6 space-y-6 h-screen ">
-      <h2 className="text-xl font-bold">Navigation</h2>
-      <nav className="space-y-4">
-        <button
-          onClick={handleBack}
-          className="block w-full text-left bg-yellow-700 hover:bg-yellow-600 text-white font-bold py-2 px-4 mt-60 rounded-md shadow focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:ring-gray-300 text-sm"
-        >
-          Back to Pool List
-        </button>
-      </nav>
-    </div>
-  );
-};
+// const Sidebar: React.FC<{ handleBack: () => void }> = ({ handleBack }) => {
+//   return (
+//     <div className="w-64 bg-gray-600 text-white p-6 space-y-6 h-screen ">
+//       <h2 className="text-xl font-bold">Navigation</h2>
+      // <nav className="space-y-4">
+//         <button
+//           onClick={handleBack}
+//           className="block w-full text-left bg-yellow-700 hover:bg-yellow-600 text-white font-bold py-2 px-4 mt-60 rounded-md shadow focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:ring-gray-300 text-sm"
+//         >
+//           Back to Pool List
+//         </button>
+//       </nav>
+//     </div>
+//   );
+// };
 
 export default LoanDashboard;
